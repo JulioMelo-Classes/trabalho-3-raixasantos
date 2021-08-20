@@ -1,4 +1,0 @@
-https://github.com/JulioMelo-Classes/lista-1-Danilo25
-"terminal.integrated.automationShell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-    "terminal.integrated.shellArgs.windows": [
-            "-noe", "-c", "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\Launch-VsDevShell.ps1"]
