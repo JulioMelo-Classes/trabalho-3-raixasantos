@@ -1,6 +1,4 @@
 #include "SnakeGame.h"
-#include "Level.h"
-#include "Snake.h"
 
 #include <iostream>
 #include <fstream>
@@ -14,43 +12,83 @@ using namespace std;
 SnakeGame::SnakeGame(){
     choice = "";
     frameCount = 0;
+    levelMaze = 0;
     initialize_game();
+}
+
+/**
+ * @brief função auxiliar para fazer o programa esperar por alguns milisegundos
+ * @param ms a quantidade de segundos que o programa deve esperar
+ */
+void wait(int ms){
+    this_thread::sleep_for(chrono::milliseconds(ms));
 }
 
 void SnakeGame::initialize_game(){
     //carrega o nivel ou os níveis
-    ifstream levelFile("../data/maze1.txt"); //só dá certo se o jogo for executado dentro da raíz do diretório (vc vai resolver esse problema pegando o arquivo da linha de comando)
-    int lineCount = 0, posStartcount = 0;
+    ifstream levelFile("../data/maze2.txt"); //só dá certo se o jogo for executado dentro da raíz do diretório (vc vai resolver esse problema pegando o arquivo da linha de comando)
+    int lineCount = 0;
     string line;
-    bool MapConfig = true;
+
     Level level;
-    
-    // TODO: Implementar vetor de levels
+    bool MapConfig = true;
+    int posStartcount = 0; 
 
     if(levelFile.is_open()){
         while(getline(levelFile, line)){ //pega cada linha do arquivo
-            /*if(lineCount == 0)
-                MapConfig = level.verify_map_settings(line);  
-                // TODO: Corrigir erro da referência indefinida
-            */
-            if(lineCount > 0){ //ignora a primeira linha já que ela contem informações que não são uteis para esse exemplo
+            if(lineCount == 0){
+                posStartcount = 0;
+                MapConfig = level.verify_map_settings(line);   
+            }               
+            if(lineCount > 0 && lineCount < level.get_rows()+1){ //ignora a primeira linha já que ela contem informações que não são uteis para esse exemplo
                 for(int i = 0; i < line.size(); i++){
-                    if(line[i] == '*')
+                    if(line[i] == '*'){
                         posStartcount++;
+                        snake.set_start_position(lineCount-1, i);
+                    }
                 }
                 maze.push_back(line);
             }
+            if(lineCount == level.get_rows()){
+                if(posStartcount != 1){
+                    cout << "Formatação do mapa inválida! Tente novamente..." << endl;
+                    MapConfig = false;
+                }
+            }
+            cout << "Linha da vez: " << line << endl;
+            //cout << "Linhas do mapa: " << level.get_rows() << endl; 
+            cout << "lineCount: " << lineCount << endl;
+            wait(500);
             lineCount++;
+
+            if(lineCount == level.get_rows()+1){
+                //maze.clear();
+                if(MapConfig){
+                    // dá o push_back() do level e do respectivo maze
+                    mazes.push_back(maze);
+                    levels.push_back(level);
+                    // zerar o level e o maze
+                    maze.clear();
+                    cout << "Inserido o level e o maze" << endl;
+                    wait(500);
+                }     
+                cout << "Estado MapConfig: " << MapConfig << endl;      
+                MapConfig = true;                
+                lineCount = 0;
+            }
         }
     }
     if(!MapConfig || posStartcount != 1){
-        if(posStartcount != 1)
-            cout << "Formatação do mapa inválida! Tente novamente..." << endl;
-
         state = GAME_OVER;
     }
-    else
+    else{
         state = RUNNING;
+        levelsCount = levels.size();
+        cout << "Qtd de niveis: " << levelsCount;
+        maze = mazes[levelMaze];
+        levelMaze = 1;
+    }
+    cout << "State: " << state << endl;
 }
 
 void SnakeGame::process_actions(){
@@ -92,14 +130,6 @@ void SnakeGame::update(){
 }
 
 /**
- * @brief função auxiliar para fazer o programa esperar por alguns milisegundos
- * @param ms a quantidade de segundos que o programa deve esperar
- */
-void wait(int ms){
-    this_thread::sleep_for(chrono::milliseconds(ms));
-}
-
-/**
  * @brief função auxiliar para limpar o terminal
  */
 void clearScreen(){
@@ -117,11 +147,21 @@ void SnakeGame::render(){
     clearScreen();
     switch(state){
         case RUNNING:
-            //cout << "----------PAINEL---------";
+            cout << "----------PAINEL-----------------" << endl
+                << "         Level: " << levelMaze << "       " << endl
+                << "---------------------------------" << endl;
             //desenha todas as linhas do labirinto
-            for(auto line : maze){
-                cout<<line<<endl;
+
+            for(int i = 0; i < maze.size(); i++){
+                for(int j = 0; j < maze[i].size(); j++){
+                    if(make_pair(i,j) == snake.get_position())
+                        cout << '<';
+                    else
+                        cout << maze[i][j];
+                }
+                cout << endl;
             }
+
             break;
         case WAITING_USER:
             cout<<"Você quer continuar com o jogo? (s/n)"<<endl;
