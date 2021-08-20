@@ -7,4 +7,6 @@ include_directories( include )
 
 # Cria um executável com nome "snaze", adiciona neste executável os arquivos .cpp
 add_executable(snaze src/Snaze.cpp
-                     src/SnakeGame.cpp)
+                     src/SnakeGame.cpp
+                     src/Level.cpp
+                     src/Snake.cpp)
