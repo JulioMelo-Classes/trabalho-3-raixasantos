@@ -1,5 +1,9 @@
 #ifndef SnakeGame_h
 #define SnakeGame_h
+
+#include "Level.h"
+#include "Snake.h"
+
 #include <iostream>
 #include <vector>
 #include <list>
@@ -20,10 +24,15 @@ class SnakeGame{
     
     private:
         //<! atributos adicione outros se quiser
+        vector<vector<string>> mazes; //<! vector contendo os labirintos dos níveis
         vector<string> maze; //<! vector contendo o labirinto atual, pode ser interpretado como uma matriz
+        vector<Level> levels; //<! vector contendo os níveis
         int frameCount; //<! contador de frames, usado apenas como exemplo
         string choice; //<! usado na função process_actions para guardar a escolha do usuário
         GameStates state; //<! guarda o estado do jogo
+        int levelsCount;
+        int levelMaze;//<! Determina qual o labirinto atual
+        Snake snake; // TESTE
 
     public:
         /**

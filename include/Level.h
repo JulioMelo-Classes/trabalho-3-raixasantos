@@ -11,15 +11,21 @@ class Level{
         int columns; //<! número de colunas
         int rows; //<! número de linhas
         int foodAmount; //<! número de comidas no mapa
-        int foodLocation_x, foodLocation_y; //<! coordenadas atuais da comida
+        pair<int, int> foodLocation;//<! coordenadas atuais da comida First = x, Second = y
 
     public:
+        /**
+        * @brief acessar o valor de linhas
+        * @return o valor referente a quantidade de linhas
+        **/
+        int get_rows();
+
         /**
         * @brief processa as informações sobre o mapa passadas no arquivo
         * @param line linha do arquivo a ser processada
         * @return True, se não houve nenhuma informação inválida. Caso contrário, false
         **/
-        bool verify_map_settings(string line);
+        bool verify_map_settings(string line_);
 
         /**
         * @brief atualiza a posição da comida no mapa
