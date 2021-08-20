@@ -1,7 +1,10 @@
 #include "SnakeGame.h"
+#include "Level.h"
+#include "Snake.h"
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include <chrono> //por causa do sleep
 #include <thread> //por causa do sleep
@@ -16,21 +19,39 @@ SnakeGame::SnakeGame(){
 
 void SnakeGame::initialize_game(){
     //carrega o nivel ou os níveis
-    ifstream levelFile("data/maze1.txt"); //só dá certo se o jogo for executado dentro da raíz do diretório (vc vai resolver esse problema pegando o arquivo da linha de comando)
-    int lineCount = 0;
+    ifstream levelFile("../data/maze1.txt"); //só dá certo se o jogo for executado dentro da raíz do diretório (vc vai resolver esse problema pegando o arquivo da linha de comando)
+    int lineCount = 0, posStartcount = 0;
     string line;
+    bool MapConfig = true;
+    Level level;
+    
+    // TODO: Implementar vetor de levels
+
     if(levelFile.is_open()){
         while(getline(levelFile, line)){ //pega cada linha do arquivo
+            /*if(lineCount == 0)
+                MapConfig = level.verify_map_settings(line);  
+                // TODO: Corrigir erro da referência indefinida
+            */
             if(lineCount > 0){ //ignora a primeira linha já que ela contem informações que não são uteis para esse exemplo
+                for(int i = 0; i < line.size(); i++){
+                    if(line[i] == '*')
+                        posStartcount++;
+                }
                 maze.push_back(line);
             }
             lineCount++;
         }
     }
-    state = RUNNING;
+    if(!MapConfig || posStartcount != 1){
+        if(posStartcount != 1)
+            cout << "Formatação do mapa inválida! Tente novamente..." << endl;
+
+        state = GAME_OVER;
+    }
+    else
+        state = RUNNING;
 }
-
-
 
 void SnakeGame::process_actions(){
     //processa as entradas do jogador de acordo com o estado do jogo
@@ -96,6 +117,7 @@ void SnakeGame::render(){
     clearScreen();
     switch(state){
         case RUNNING:
+            //cout << "----------PAINEL---------";
             //desenha todas as linhas do labirinto
             for(auto line : maze){
                 cout<<line<<endl;
