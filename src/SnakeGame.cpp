@@ -9,10 +9,12 @@
 
 using namespace std;
 
-SnakeGame::SnakeGame(){
+SnakeGame::SnakeGame(int argc, char *argv[]){
     choice = "";
     frameCount = 0;
-    levelMaze = 0;
+    currentLevel = 0;
+    start = false;
+    process_command_line(argc, argv);
     initialize_game();
 }
 
@@ -24,71 +26,67 @@ void wait(int ms){
     this_thread::sleep_for(chrono::milliseconds(ms));
 }
 
+void SnakeGame::process_command_line(int argc, char *argv[]){
+    GameMapsFile = "../data/maze1.txt"; 
+    mode = PACMAN;
+
+    if(argv[1] == "CLASSIC")
+        mode = CLASSIC;
+    if(argv[2] != "" && argc == 3)
+        GameMapsFile = argv[2];
+}
+
 void SnakeGame::initialize_game(){
-    //carrega o nivel ou os níveis
-    ifstream levelFile("../data/maze2.txt"); //só dá certo se o jogo for executado dentro da raíz do diretório (vc vai resolver esse problema pegando o arquivo da linha de comando)
+    Level level;
+    bool MapConfig = true;
+    int posStartCount = 0; 
+    ifstream levelFile(GameMapsFile); 
     int lineCount = 0;
     string line;
 
-    Level level;
-    bool MapConfig = true;
-    int posStartcount = 0; 
-
     if(levelFile.is_open()){
-        while(getline(levelFile, line)){ //pega cada linha do arquivo
+        while(getline(levelFile, line)){ 
             if(lineCount == 0){
-                posStartcount = 0;
-                MapConfig = level.verify_map_settings(line);   
+                posStartCount = 0;
+                MapConfig = level.verify_map_settings(line);  
             }               
-            if(lineCount > 0 && lineCount < level.get_rows()+1){ //ignora a primeira linha já que ela contem informações que não são uteis para esse exemplo
+            if(lineCount > 0 && lineCount < level.get_rows()+1){
                 for(int i = 0; i < line.size(); i++){
                     if(line[i] == '*'){
-                        posStartcount++;
-                        snake.set_start_position(lineCount-1, i);
+                        posStartCount++;
+                        level.set_start_position(lineCount-1, i);
                     }
                 }
                 maze.push_back(line);
             }
             if(lineCount == level.get_rows()){
-                if(posStartcount != 1){
+                if(posStartCount != 1){
                     cout << "Formatação do mapa inválida! Tente novamente..." << endl;
                     MapConfig = false;
                 }
             }
-            cout << "Linha da vez: " << line << endl;
-            //cout << "Linhas do mapa: " << level.get_rows() << endl; 
-            cout << "lineCount: " << lineCount << endl;
-            wait(500);
+
             lineCount++;
 
             if(lineCount == level.get_rows()+1){
-                //maze.clear();
                 if(MapConfig){
-                    // dá o push_back() do level e do respectivo maze
                     mazes.push_back(maze);
                     levels.push_back(level);
-                    // zerar o level e o maze
-                    maze.clear();
-                    cout << "Inserido o level e o maze" << endl;
-                    wait(500);
                 }     
-                cout << "Estado MapConfig: " << MapConfig << endl;      
-                MapConfig = true;                
                 lineCount = 0;
+                maze.clear();
             }
         }
     }
-    if(!MapConfig || posStartcount != 1){
+    if(!MapConfig || posStartCount != 1 || levels.size() == 0){
         state = GAME_OVER;
     }
     else{
         state = RUNNING;
         levelsCount = levels.size();
-        cout << "Qtd de niveis: " << levelsCount;
-        maze = mazes[levelMaze];
-        levelMaze = 1;
+        maze = mazes[currentLevel];
+        currentLevel = 1;
     }
-    cout << "State: " << state << endl;
 }
 
 void SnakeGame::process_actions(){
@@ -99,6 +97,12 @@ void SnakeGame::process_actions(){
     switch(state){
         case WAITING_USER: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
             cin>>std::ws>>choice;
+            break;
+        case RUNNING:
+            if(start == false){
+                levels[currentLevel-1].set_food_location(maze);
+                start = true;
+            }
             break;
         default:
             //nada pra fazer aqui
@@ -146,20 +150,29 @@ void clearScreen(){
 void SnakeGame::render(){
     clearScreen();
     switch(state){
-        case RUNNING:
-            cout << "----------PAINEL-----------------" << endl
-                << "         Level: " << levelMaze << "       " << endl
-                << "---------------------------------" << endl;
-            //desenha todas as linhas do labirinto
-
+        case RUNNING:        
+            cout << "     Boas vindas ao SNAZE   " << endl
+                << "------------------------------------------------------------------------" << endl
+                << "Níveis carregados: " << levelsCount 
+                << "| Vidas da snake: 5" 
+                << "| Maçãs a serem comidas: " << levels[currentLevel-1].get_foodsToEat() << endl
+                << endl;
+            
             for(int i = 0; i < maze.size(); i++){
                 for(int j = 0; j < maze[i].size(); j++){
-                    if(make_pair(i,j) == snake.get_position())
+                    if(make_pair(i,j) == levels[currentLevel-1].get_start_position())
                         cout << '<';
+                    else if(make_pair(i,j) == levels[currentLevel-1].get_foodLocation())
+                        cout << 'F';
                     else
                         cout << maze[i][j];
-                }
+                } 
+                cout << " SP: " << levels[currentLevel-1].get_start_position().first
+                    << ", " << levels[currentLevel-1].get_start_position().second
+                    << " FL: " << levels[currentLevel-1].get_foodLocation().first
+                    << ", " << levels[currentLevel-1].get_foodLocation().second;
                 cout << endl;
+                wait(1200);
             }
 
             break;
@@ -174,6 +187,7 @@ void SnakeGame::render(){
 }
 
 void SnakeGame::game_over(){
+    start = true;
 }
 
 void SnakeGame::loop(){

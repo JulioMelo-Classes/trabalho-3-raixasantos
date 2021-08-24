@@ -2,15 +2,17 @@
 
 Snake::Snake(){
     life = 5;
-    bodySize = 0;
+    body cab;
+    cab.character = '^';
+    cab.posX = -1;
+    cab.posY = -1;
+    snakeBody.push_back(cab);
 }
 
-void Snake::set_start_position(int x, int y){
-    snakePosStart = make_pair(x, y);
-    snakePos.insert({'<', {snakePosStart.first, snakePosStart.second}}); // verificar qual direção desenhar a cabeça
-}
-
-pair<int, int> Snake::get_position(){
-    // return make_pair(snakePos[0].second.first, snakePos[0].second.second); // depois de second, não tá conseguindo acessar 
-    return make_pair(snakePosStart.first, snakePosStart.second);
+void Snake::add_body(){
+    body tail;
+    tail.character = 'o';
+    tail.posX = (snakeBody.end()-1).posX;
+    tail.posY = (snakeBody.end()-1).posY;
+    snakeBody.push_back(tail);
 }
