@@ -1,6 +1,7 @@
 #ifndef SnakeGame_h
 #define SnakeGame_h
 
+#include "Player.h"
 #include "Level.h"
 #include "Snake.h"
 
@@ -21,6 +22,14 @@ class SnakeGame{
             WAITING_USER, //<! quando o jogo deve esperar por uma entrada do usuário o estado é WAITING_USER
             WAITING_PLAYER //<! quando o jogo deve esperar pela IA (realmente necessário?)
         };
+        
+        /**
+        * @brief descreve os possíveis modos do jogo
+        **/
+        enum GameModes{
+            PACMAN, //<! modo de jogo em que a cobra não possui rabo
+            CLASSIC //<! modo de jogo em que a cobra possui rabo
+        };
     
     private:
         //<! atributos adicione outros se quiser
@@ -30,15 +39,17 @@ class SnakeGame{
         int frameCount; //<! contador de frames, usado apenas como exemplo
         string choice; //<! usado na função process_actions para guardar a escolha do usuário
         GameStates state; //<! guarda o estado do jogo
-        int levelsCount;
-        int levelMaze;//<! Determina qual o labirinto atual
-        Snake snake; // TESTE
+        GameModes mode; //<! guarda o modo de jogo
+        string GameMapsFile; //<! guarda o nome do arquivo que contem os mapas
+        int levelsCount; //<! total de níveis do jogo
+        int currentLevel;//<! determina qual o labirinto atual
+        bool start; //<! determina se é a primeira vez que o nível está rodando
 
     public:
         /**
         * @brief construtor padrão, fique à vontade para adicionar parâmetros se desejar
         **/
-        SnakeGame();
+        SnakeGame(int argc, char *argv[]);
 
         /**
         * @brief chamado no main, este loop executa o jogo indefinidamente até que o usuário escolha terminar!
@@ -46,6 +57,11 @@ class SnakeGame{
         void loop();
 
     private:
+        /**
+        * @brief processa as entradas da linha de comando
+        **/
+        void process_command_line(int argc, char *argv[]);
+
         /**
         * @brief realiza a inicialização geral do jogo, fique à vontade para adicionar parâmetros se achar que deve
         **/
