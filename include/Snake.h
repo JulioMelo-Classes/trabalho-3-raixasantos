@@ -7,7 +7,7 @@
 
 using namespace std;
 
-struct body{
+struct Body{
     char character;
     int posX;
     int posY;
@@ -16,14 +16,50 @@ struct body{
 class Snake{
     private:
         int life; //<! número de vidas
-        map<char, pair<int, int>> snakePos; //<! coordenadas do corpo da cobra First = x Second = y
-        vector<body> snakeBody; //<! vector contendo as partes do corpo da cobra
+        int bodySize; //<! número de comidas pegas pela cobra + a cabeça
+        vector<Body> snakeBody; //<! vector contendo as partes do corpo da cobra
+        int currentDirection; //<! direção atual da cobra
+        int nextDirection; //<! próxima direção da cobra
 
     public:
         //! Construtor
-        Snake(); // life = 5, bodySize = 0
-        
-        void add_body();
+        Snake();
+
+    public:
+        /**
+        * @brief atualiza a posição da cabeça da cobra
+        * @param x linha que a cobra inicia
+        * @param y coluna que a cobra inicia
+        **/
+        void set_head_position(int x, int y);
+
+        /**
+        * @brief atualiza a próxima direção da cobra
+        * @param x próxima direção da cobra
+        **/
+        void set_next_direction(int direction);
+
+        // a posição do novo body vai ser add/sub de acordo com a direção
+        void add_body();  
+
+        /**
+        * @brief movimenta a cabeça junto do rabo da cobra
+        **/
+        void move_body();
+
+        /**
+        * @brief retorna a posição da cabeça da cobra
+        * @return o pair contendo as coordenadas x e y
+        **/
+        pair<int, int> get_head_position(); 
+
+        /**
+        * @brief desenha a cabeça junto do rabo da cobra, caso sejam as coordenadas pertencentes a cobra
+        * @param x linha a verificar se pertence a cobra
+        * @param y coluna a verificar se pertence a cobra
+        * @return True, se as coordenadas pertencerem e a parte da cobra for exibida. Caso contrário, false
+        **/
+        bool draw_snake(int x, int y);
 };
 
 #endif

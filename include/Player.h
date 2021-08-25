@@ -10,25 +10,31 @@
 using namespace std;
 
 class Player{
+    public:
+        enum Direction{ // 0: left, 1: right, 2: up, 3: down
+            LEFT, 
+            RIGHT, 
+            UP, 
+            DOWN 
+        };
+
     private:
-        Snake snake;
         vector<pair<int,int>> path;
         vector<pair<int,int>> visited;
+        Direction nextDirection;
 
     public:
         /**
         * @brief encontra um caminho para a cobra chegar até a comida
         * @return true, se encontrou um caminho. false, cc 
         **/
-        bool find_solution();
+        bool find_solution(vector<string> & maze, pair<int, int> head);
 
         /**
         * @brief atualiza a direção em que a cobra deve seguir
         * @return retorna a direção para a cobra seguir
         **/
-        pair<int, int> next_move();
-
-        void Feed();
+        int next_move();
 };
 
 #endif

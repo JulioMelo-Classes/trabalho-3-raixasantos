@@ -33,6 +33,8 @@ class SnakeGame{
     
     private:
         //<! atributos adicione outros se quiser
+        Snake snake;
+        Player player;
         vector<vector<string>> mazes; //<! vector contendo os labirintos dos níveis
         vector<string> maze; //<! vector contendo o labirinto atual, pode ser interpretado como uma matriz
         vector<Level> levels; //<! vector contendo os níveis
