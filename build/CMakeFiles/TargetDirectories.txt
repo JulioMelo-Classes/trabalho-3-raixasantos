@@ -1,3 +1,0 @@
-C:/Users/danil/OneDrive/Área de Trabalho/BTI/2021.1/LP1/trabalho-3-raixasantos/build/CMakeFiles/snaze.dir
-C:/Users/danil/OneDrive/Área de Trabalho/BTI/2021.1/LP1/trabalho-3-raixasantos/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/danil/OneDrive/Área de Trabalho/BTI/2021.1/LP1/trabalho-3-raixasantos/build/CMakeFiles/ZERO_CHECK.dir
