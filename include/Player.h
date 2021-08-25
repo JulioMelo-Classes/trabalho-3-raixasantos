@@ -19,8 +19,8 @@ class Player{
         };
 
     private:
-        vector<pair<int,int>> path;
-        vector<pair<int,int>> visited;
+        vector<pair<int,int> > path;
+        vector<pair<int,int> > visited;
         Direction nextDirection;
 
     public:
@@ -28,13 +28,19 @@ class Player{
         * @brief encontra um caminho para a cobra chegar até a comida
         * @return true, se encontrou um caminho. false, cc 
         **/
-        bool find_solution(vector<string> & maze, pair<int, int> head);
+        bool find_solution(vector<string> & maze, pair<int, int> head, int currentDirection);
 
         /**
         * @brief atualiza a direção em que a cobra deve seguir
         * @return retorna a direção para a cobra seguir
         **/
         int next_move();
+
+        /**
+        * @brief Verifica se houve "colisão" com a fruta
+        * @return true se "colidiu". false se não
+        **/
+        bool food_colision(pair<int, int> food, pair<int, int> head);
 };
 
 #endif

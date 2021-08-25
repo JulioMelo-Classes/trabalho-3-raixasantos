@@ -18,12 +18,13 @@ void Snake::set_head_position(int x, int y){
 
 void Snake::set_next_direction(int direction){
     // 0: left, 1: right, 2: up, 3: down
+    currentDirection = direction;
     if(direction == 0){
-        snakeBody[0].character = '<';
+        snakeBody[0].character = '>';
         snakeBody[0].posY--;
     }
     else if(direction == 1){
-        snakeBody[0].character = '>';
+        snakeBody[0].character = '<';
         snakeBody[0].posY++;
     }
     else if(direction == 2){
@@ -34,6 +35,9 @@ void Snake::set_next_direction(int direction){
         snakeBody[0].character = '^';
         snakeBody[0].posX++;
     }
+}
+int Snake::get_head_direction(){
+    return currentDirection;
 }
 
 void Snake::move_body(){

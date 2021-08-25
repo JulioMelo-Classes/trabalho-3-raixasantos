@@ -33,6 +33,11 @@ int Level::get_foodsToEat(){
     return foodAmount;
 }
 
+void Level::food_eated(pair<int, int> location, vector<string> & maze){
+    foodAmount-=1;
+    maze[location.first][location.second] = ' ';
+}
+
 pair<int, int> Level::get_foodLocation(){
     return foodLocation;
 }
@@ -61,7 +66,7 @@ bool Level::verify_map_settings(string line_){
 }
 
 void Level::set_food_location(vector<string> & maze){
-    vector<pair<int, int>> empty;
+    vector<pair<int, int> > empty;
 
     for(int i = 0; i < maze.size(); i++){
         for(int j = 0; j < maze[i].size(); j++){

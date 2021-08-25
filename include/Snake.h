@@ -38,6 +38,11 @@ class Snake{
         * @param x próxima direção da cobra
         **/
         void set_next_direction(int direction);
+        
+        /**
+        * @brief retorna a atual direção da cobra
+        **/
+        int get_head_direction();
 
         // a posição do novo body vai ser add/sub de acordo com a direção
         void add_body();  

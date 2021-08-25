@@ -105,7 +105,7 @@ void SnakeGame::process_actions(){
                                         levels[currentLevel-1].get_start_position().second);
                 start = true;
             }
-            player.find_solution(maze, snake.get_head_position());
+            player.find_solution(maze, snake.get_head_position(), snake.get_head_direction());
             break;
         default:
             //nada pra fazer aqui
@@ -118,6 +118,10 @@ void SnakeGame::update(){
     switch(state){
         case RUNNING:
             snake.set_next_direction(player.next_move());
+            if(player.food_colision(levels[currentLevel-1].get_foodLocation(), snake.get_head_position())){
+                levels[currentLevel-1].food_eated(levels[currentLevel-1].get_foodLocation(), maze);
+                levels[currentLevel-1].set_food_location(maze);
+            }
             /*
             if(frameCount>0 && frameCount%10 == 0) //depois de 10 frames o jogo pergunta se o usuário quer continuar
                 state = WAITING_USER;
