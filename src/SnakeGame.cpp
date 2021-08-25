@@ -99,10 +99,13 @@ void SnakeGame::process_actions(){
             cin>>std::ws>>choice;
             break;
         case RUNNING:
-            if(start == false){
+            if(!start){
                 levels[currentLevel-1].set_food_location(maze);
+                snake.set_head_position(levels[currentLevel-1].get_start_position().first,
+                                        levels[currentLevel-1].get_start_position().second);
                 start = true;
             }
+            player.find_solution(maze, snake.get_head_position());
             break;
         default:
             //nada pra fazer aqui
@@ -114,8 +117,11 @@ void SnakeGame::update(){
     //atualiza o estado do jogo de acordo com o resultado da chamada de "process_input"
     switch(state){
         case RUNNING:
+            snake.set_next_direction(player.next_move());
+            /*
             if(frameCount>0 && frameCount%10 == 0) //depois de 10 frames o jogo pergunta se o usuário quer continuar
                 state = WAITING_USER;
+            */
             break;
         case WAITING_USER: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
             if(choice == "n"){
@@ -160,19 +166,18 @@ void SnakeGame::render(){
             
             for(int i = 0; i < maze.size(); i++){
                 for(int j = 0; j < maze[i].size(); j++){
-                    if(make_pair(i,j) == levels[currentLevel-1].get_start_position())
-                        cout << '<';
+                    if(snake.draw_snake(i,j))
+                        NULL;
                     else if(make_pair(i,j) == levels[currentLevel-1].get_foodLocation())
                         cout << 'F';
-                    else
-                        cout << maze[i][j];
+                    else{ 
+                        if(maze[i][j] == '*')
+                            cout << ' ';
+                        else
+                            cout << maze[i][j];
+                    }
                 } 
-                cout << " SP: " << levels[currentLevel-1].get_start_position().first
-                    << ", " << levels[currentLevel-1].get_start_position().second
-                    << " FL: " << levels[currentLevel-1].get_foodLocation().first
-                    << ", " << levels[currentLevel-1].get_foodLocation().second;
                 cout << endl;
-                wait(1200);
             }
 
             break;
@@ -187,7 +192,6 @@ void SnakeGame::render(){
 }
 
 void SnakeGame::game_over(){
-    start = true;
 }
 
 void SnakeGame::loop(){
