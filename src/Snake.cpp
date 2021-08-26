@@ -17,6 +17,11 @@ void Snake::set_head_position(int x, int y){
 }
 
 void Snake::set_next_direction(int direction){
+    lastPosition = make_pair(snakeBody[0].posX,
+                            snakeBody[0].posY);
+
+    move_body();
+
     // 0: left, 1: right, 2: up, 3: down
     currentDirection = direction;
     if(direction == 0){
@@ -41,11 +46,28 @@ int Snake::get_head_direction(){
 }
 
 void Snake::move_body(){
-
+    if(snakeBody.size() > 1){
+        for (int i = snakeBody.size() - 1; i > 0; i--){
+            snakeBody[i].posX = snakeBody[i - 1].posX;
+            snakeBody[i].posY = snakeBody[i - 1].posY;
+        }
+    }
 }
 
 pair<int, int> Snake::get_head_position(){
     return make_pair(snakeBody[0].posX, snakeBody[0].posY);
+}
+
+void Snake::add_tail(){
+    Body tail;
+    tail.character = 'o';
+    tail.posX = lastPosition.first;
+    tail.posY = lastPosition.second;
+    snakeBody.push_back(tail);
+}
+
+int Snake::get_lives(){
+    return life;
 }
 
 bool Snake::draw_snake(int x, int y){
@@ -56,4 +78,12 @@ bool Snake::draw_snake(int x, int y){
         }
     }
     return false;
+}
+
+void Snake::food_eaten(){ 
+    bodySize++; 
+}
+
+int Snake::get_foodEaten(){
+    return bodySize-1;
 }
