@@ -51,14 +51,6 @@ class Level{
         int get_foodsToEat();
 
         /**
-        * @brief Diminui a quantidade de comidas para terminar a faze 
-        *        e limpa a localização da que foi ingerida
-        * @param location localização em que a comida estava
-        * @param maze vector que armazena o mapa
-        **/
-        void food_eated(pair<int, int> location, vector<string> & maze);
-
-        /**
         * @brief acessar a posição da comida
         * @return as coordenadas referentes a posição da comida
         **/    

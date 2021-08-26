@@ -35,10 +35,9 @@ class SnakeGame{
         //<! atributos adicione outros se quiser
         Snake snake;
         Player player;
-        vector<vector<string> > mazes; //<! vector contendo os labirintos dos níveis
+        vector<vector<string>> mazes; //<! vector contendo os labirintos dos níveis
         vector<string> maze; //<! vector contendo o labirinto atual, pode ser interpretado como uma matriz
         vector<Level> levels; //<! vector contendo os níveis
-        int frameCount; //<! contador de frames, usado apenas como exemplo
         string choice; //<! usado na função process_actions para guardar a escolha do usuário
         GameStates state; //<! guarda o estado do jogo
         GameModes mode; //<! guarda o modo de jogo

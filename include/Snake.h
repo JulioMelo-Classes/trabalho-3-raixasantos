@@ -20,6 +20,7 @@ class Snake{
         vector<Body> snakeBody; //<! vector contendo as partes do corpo da cobra
         int currentDirection; //<! direção atual da cobra
         int nextDirection; //<! próxima direção da cobra
+        pair<int, int> lastPosition; //<! coordenadas da posição anterior
 
     public:
         //! Construtor
@@ -45,7 +46,7 @@ class Snake{
         int get_head_direction();
 
         // a posição do novo body vai ser add/sub de acordo com a direção
-        void add_body();  
+        void add_tail();  
 
         /**
         * @brief movimenta a cabeça junto do rabo da cobra
@@ -59,12 +60,29 @@ class Snake{
         pair<int, int> get_head_position(); 
 
         /**
+        * @brief retorna a posição da cabeça da cobra
+        * @return o pair contendo as coordenadas x e y
+        **/
+        int get_lives();
+
+        /**
         * @brief desenha a cabeça junto do rabo da cobra, caso sejam as coordenadas pertencentes a cobra
         * @param x linha a verificar se pertence a cobra
         * @param y coluna a verificar se pertence a cobra
-        * @return True, se as coordenadas pertencerem e a parte da cobra for exibida. Caso contrário, false
+        * @return true, se as coordenadas pertencerem e a parte da cobra for exibida. Caso contrário, false
         **/
         bool draw_snake(int x, int y);
+
+        /**
+        * @brief aumenta o tamanho da cobra, uma vez que ele comeu a comida
+        **/
+        void food_eaten();
+
+        /**
+        * @brief retorna a quantidade de comidas já comidas
+        * @return o inteiro contendo a quantidade de comidas já comidas
+        **/
+        int get_foodEaten();
 };
 
 #endif
