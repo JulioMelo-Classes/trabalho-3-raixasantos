@@ -44,7 +44,7 @@ void SnakeGame::process_command_line(int argc, char *argv[]){
     mode = PACMAN;
 
     if(argc == 3){
-        if(argv[1] != ""){ // TODO: ajeitar
+        if(string(argv[1]) == "CLASSIC"){ // TODO: ajeitar
             mode = CLASSIC;
         }
         if(argv[2] != ""){
@@ -115,6 +115,9 @@ void SnakeGame::process_actions(){
         case WAITING_USER: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
             cin>>std::ws>>choice;
             break;
+        case WAITING_USER_NEXT_LEVEL: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
+            cin>>std::ws>>choice;
+            break;
         default:
             //nada pra fazer aqui
             break;
@@ -154,6 +157,17 @@ void SnakeGame::update(){
                 }
             }
             break;
+        
+        case WAITING_USER_NEXT_LEVEL: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
+            if(choice == "0"){
+                mode = PACMAN;
+            }
+            else if(choice == "1"){
+                mode = PACMAN;
+            }
+            state = RUNNING;
+            break;
+            
         case WAITING_USER: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
             if(choice == "n"){
                 state = GAME_OVER;
@@ -166,6 +180,7 @@ void SnakeGame::update(){
                 state = RUNNING;
             }
             break;
+        
         default:
             //nada pra fazer aqui
             break;
@@ -208,6 +223,9 @@ void SnakeGame::render(){
             break;
         case WAITING_USER:
             cout<<"Você quer continuar com o jogo? (s/n)"<<endl; // TODO: terminar
+            break;
+        case WAITING_USER_NEXT_LEVEL:
+            cout<<"Você quer continuar no modo PACMAN ou CLASSIC? (0/1)"<<endl; // TODO: terminar
             break;
         case GAME_OVER:
             if(currentLevel == levelsCount){

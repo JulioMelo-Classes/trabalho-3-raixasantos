@@ -83,26 +83,6 @@ bool Player::find_solution(vector<string> & maze, pair<int, int> head, int curre
                 }
                 break;
             }
-            /*if(maze[x-1][y] == ' '){ // up
-                visited.push_back(make_pair(x--,y));
-                nextDirection = UP;
-                return true;
-            }
-            else if(maze[x+1][y] == ' '){ // down
-                visited.push_back(make_pair(x++,y));
-                nextDirection = DOWN;
-                return true;
-            }
-            else if(maze[x][y-1] == ' '){ // left
-                visited.push_back(make_pair(x,y--));
-                nextDirection = LEFT;
-                return true;
-            }
-            else if(maze[x][y+1] == ' '){ // right
-                visited.push_back(make_pair(x,y++));
-                nextDirection = RIGHT;
-                return true;
-            }*/
         }
     }
 
@@ -115,6 +95,7 @@ int Player::next_move(){
 
 bool Player::food_colision(pair<int, int> food, pair<int, int> head){
     if(food == head){
+        visited.clear();
         return true;
     }
     return false;
