@@ -17,11 +17,12 @@ class SnakeGame{
         * @brief descreve os possíveis estados do jogo, fique à vontade para adicionar outros se necessário
         **/
         enum GameStates{
+            STARTING, //<! quando o jogo está no inicio de cada nível o estado é STARTING
             RUNNING, //<! quando o jogo está executando o estado é RUNNING
             GAME_OVER, //<! quando o jogo deve terminar o estado é GAME_OVER
             WAITING_USER, //<! quando o jogo deve esperar por uma entrada do usuário o estado é WAITING_USER
-            WAITING_PLAYER, //<! quando o jogo deve esperar pela IA (realmente necessário?)
-            WAITING_USER_NEXT_LEVEL
+            WAITING_USER_NEXT_LEVEL, //<! quando o jogo deve esperar por uma entrada do usuário o estado é WAITING_USER_NEXT_LEVEL
+            WAITING_PLAYER //<! quando o jogo deve esperar pela IA o estado é WAITING_PLAYER
         };
         
         /**
@@ -45,7 +46,7 @@ class SnakeGame{
         string GameMapsFile; //<! guarda o nome do arquivo que contem os mapas
         int levelsCount; //<! total de níveis do jogo
         int currentLevel;//<! determina qual o labirinto atual
-        bool start; //<! determina se é a primeira vez que o nível está rodando
+        int score; //<! guarda a pontuação da cobra
 
     public:
         /**

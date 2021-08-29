@@ -16,6 +16,7 @@ struct Body{
 class Snake{
     private:
         int life; //<! número de vidas
+        int food; //<! número de comidas já comidas
         int bodySize; //<! número de comidas pegas pela cobra + a cabeça
         vector<Body> snakeBody; //<! vector contendo as partes do corpo da cobra
         int currentDirection; //<! direção atual da cobra
@@ -79,10 +80,15 @@ class Snake{
         void food_eaten();
 
         /**
-        * @brief retorna a quantidade de comidas já comidas
+        * @brief retorna a quantidade de comidas já comidas em um determinado nível
         * @return o inteiro contendo a quantidade de comidas já comidas
         **/
         int get_foodEaten();
+
+        /**
+        * @brief chamada quando o jogo termina a fim de destruir/resetar elementos da cobra
+        **/
+        void reset(int state);
 };
 
 #endif
