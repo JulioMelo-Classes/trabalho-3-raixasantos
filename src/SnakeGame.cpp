@@ -12,7 +12,7 @@ using namespace std;
 SnakeGame::SnakeGame(int argc, char *argv[]){
     choice = "";
     currentLevel = 0;
-    start = false;
+    score = 0;
     process_command_line(argc, argv);
     initialize_game();
 }
@@ -44,7 +44,7 @@ void SnakeGame::process_command_line(int argc, char *argv[]){
     mode = PACMAN;
 
     if(argc == 3){
-        if(string(argv[1]) == "CLASSIC"){ // TODO: ajeitar
+        if(string(argv[1]) == "CLASSIC"){ 
             mode = CLASSIC;
         }
         if(argv[2] != ""){
@@ -99,7 +99,7 @@ void SnakeGame::initialize_game(){
         state = GAME_OVER;
     }
     else{
-        state = RUNNING;
+        state = STARTING;
         levelsCount = levels.size();
         maze = mazes[currentLevel];
         currentLevel = 1;
@@ -107,38 +107,36 @@ void SnakeGame::initialize_game(){
 }
 
 void SnakeGame::process_actions(){
-    //processa as entradas do jogador de acordo com o estado do jogo
-    //nesse exemplo o jogo tem 3 estados, WAITING_USER, RUNNING e GAME_OVER.
-    //no caso deste trabalho temos 2 tipos de entrada, uma que vem da classe Player, como resultado do processamento da IA
-    //outra vem do próprio usuário na forma de uma entrada do teclado.
     switch(state){
-        case WAITING_USER: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
-            cin>>std::ws>>choice;
+        case WAITING_PLAYER:
+            player.find_solution(maze, snake.get_head_position(), snake.get_head_direction());
+            snake.set_next_direction(player.next_move());
+            state = RUNNING;
             break;
-        case WAITING_USER_NEXT_LEVEL: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
-            cin>>std::ws>>choice;
+        case WAITING_USER:
+            cin>>ws>>choice;
+            break;
+        case WAITING_USER_NEXT_LEVEL:
+            cin>>ws>>choice;
             break;
         default:
-            //nada pra fazer aqui
             break;
     }
 }
 
 void SnakeGame::update(){
-    //atualiza o estado do jogo de acordo com o resultado da chamada de "process_input"
     switch(state){
-        case RUNNING:
-            if(!start){
-                levels[currentLevel-1].set_food_location(maze);
-                snake.set_head_position(levels[currentLevel-1].get_start_position().first,
-                                        levels[currentLevel-1].get_start_position().second);
-                start = true;
+        case STARTING:
+            levels[currentLevel-1].set_food_location(maze);
+            snake.set_head_position(levels[currentLevel-1].get_start_position().first,
+                                    levels[currentLevel-1].get_start_position().second);
+            if(currentLevel > 1){
+                state = RUNNING;
             }
-
-            player.find_solution(maze, snake.get_head_position(), snake.get_head_direction());
-            snake.set_next_direction(player.next_move());
-
+            break;
+        case RUNNING:
             if(player.food_colision(levels[currentLevel-1].get_foodLocation(), snake.get_head_position())){
+                score += 200;
                 snake.food_eaten();
                 levels[currentLevel-1].set_food_location(maze);
                 if(mode == CLASSIC){
@@ -152,37 +150,34 @@ void SnakeGame::update(){
                 }
                 else{
                     currentLevel++;
-                    state = WAITING_USER;
-                    // resetar as coisas
+                    maze = mazes[currentLevel-1];
+                    state = WAITING_USER_NEXT_LEVEL;
                 }
+                game_over();
             }
             break;
         
-        case WAITING_USER_NEXT_LEVEL: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
-            if(choice == "0"){
+        case WAITING_USER_NEXT_LEVEL: 
+            if(choice == "p"){
                 mode = PACMAN;
             }
-            else if(choice == "1"){
-                mode = PACMAN;
+            else if(choice == "c"){
+                mode = CLASSIC;
             }
-            state = RUNNING;
+            state = STARTING;
             break;
             
-        case WAITING_USER: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
+        case WAITING_USER:
             if(choice == "n"){
                 state = GAME_OVER;
                 game_over();
             }
             else{
-                // TODO: continuar
-                // se choice == 1: PACMAN
-                // se choice == 2: CLASSIC
                 state = RUNNING;
             }
             break;
         
         default:
-            //nada pra fazer aqui
             break;
     }
 }
@@ -190,20 +185,29 @@ void SnakeGame::update(){
 void SnakeGame::render(){
     clearScreen();
     switch(state){
-        case RUNNING:        
-            cout << "     Boas vindas ao SNAZE   " << endl // if(start == true && currentLevel == 1)
-                << "------------------------------------------------------------------------" << endl
-                << "Níveis carregados: " << levelsCount 
-                << "| Vidas da snake: 5" 
-                << "| Maçãs a serem comidas: " << levels[currentLevel-1].get_foodsToEat() << endl; 
-            // TODO: separar
-            cout << "------------------------------------------------------------------------" << endl
-                << "Lives: " << snake.get_lives()
-                << "| Score: " 
+        case STARTING: 
+            if(currentLevel == 1){
+                cout << "-------> Boas vindas ao SNAZE <-------" << endl                
+                    << "------------------------------------------------------------------------" << endl
+                    << "Níveis carregados: " << levelsCount 
+                    << "| Vidas da snake: 5" 
+                    << "| Maçãs a serem comidas: " << levels[currentLevel-1].get_foodsToEat() << endl
+                    << "Vença todos os níveis para vencer o jogo. Boa sorte!" << endl
+                    << "------------------------------------------------------------------------" << endl
+                    << ">>>> Pressione <ENTER> para começar o jogo!" << endl;                    
+                    fgetc(stdin);
+                    cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+                    state = WAITING_PLAYER;
+            } else{
+                cout << "Inciando nova fase no modo: " << mode << ". Divirta-se!!"<< endl;
+            }             
+            break;
+        case RUNNING:       
+            cout << "----------------------------------------------------" << endl
+                << "Vida: " << snake.get_lives()
+                << "| Score: " << score
                 << "| Maçãs comidas: " << snake.get_foodEaten() << " de "<< levels[currentLevel-1].get_foodsToEat() << endl
-                << "------------------------------------------------------------------------" << endl; 
-
-            cout << mode << endl;
+                << "----------------------------------------------------" << endl; 
             
             for(int i = 0; i < maze.size(); i++){
                 for(int j = 0; j < maze[i].size(); j++){
@@ -220,25 +224,28 @@ void SnakeGame::render(){
                 } 
                 cout << endl;
             }
+            state = WAITING_PLAYER;
             break;
         case WAITING_USER:
-            cout<<"Você quer continuar com o jogo? (s/n)"<<endl; // TODO: terminar
+            cout << "Você quer continuar com o jogo? (s/n)" << endl;
             break;
         case WAITING_USER_NEXT_LEVEL:
-            cout<<"Você quer continuar no modo PACMAN ou CLASSIC? (0/1)"<<endl; // TODO: terminar
+            cout << "Você quer continuar no modo PACMAN ou CLASSIC? (p/c)" << endl;
             break;
         case GAME_OVER:
             if(currentLevel == levelsCount){
                 cout << "A cobra ganhou!" << endl;
             }
-            cout<<"O jogo terminou!"<<endl;
+            cout << "O jogo terminou!" << endl;
             break;
     }
 }
 
 void SnakeGame::game_over(){
-    // TODO: terminar
-    // resetar as coisas
+    snake.reset(state);
+    if(state == GAME_OVER){
+        score = 0;
+    }
 }
 
 void SnakeGame::loop(){
@@ -246,6 +253,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);// espera 1 segundo entre cada frame
+        wait(1000);
     }
 }

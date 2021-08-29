@@ -2,7 +2,7 @@
 
 Snake::Snake(){
     life = 5;
-    bodySize = 1;
+    food = 0;
     currentDirection = 2; // 2: up
     Body cab;
     cab.character = 'v';
@@ -41,8 +41,13 @@ void Snake::set_next_direction(int direction){
         snakeBody[0].posX++;
     }
 }
+
 int Snake::get_head_direction(){
     return currentDirection;
+}
+
+pair<int, int> Snake::get_head_position(){
+    return make_pair(snakeBody[0].posX, snakeBody[0].posY);
 }
 
 void Snake::move_body(){
@@ -54,20 +59,12 @@ void Snake::move_body(){
     }
 }
 
-pair<int, int> Snake::get_head_position(){
-    return make_pair(snakeBody[0].posX, snakeBody[0].posY);
-}
-
 void Snake::add_tail(){
     Body tail;
     tail.character = 'o';
     tail.posX = lastPosition.first;
     tail.posY = lastPosition.second;
     snakeBody.push_back(tail);
-}
-
-int Snake::get_lives(){
-    return life;
 }
 
 bool Snake::draw_snake(int x, int y){
@@ -80,10 +77,28 @@ bool Snake::draw_snake(int x, int y){
     return false;
 }
 
+int Snake::get_lives(){
+    return life;
+}
+
 void Snake::food_eaten(){ 
-    bodySize++; 
+    food++; 
 }
 
 int Snake::get_foodEaten(){
-    return bodySize-1;
+    return food;
+}
+
+void Snake::reset(int state){
+    if(state == 2){
+        bodySize = 1;
+        currentDirection = 2; // 2: up
+        snakeBody.clear();
+        Body cab;
+        cab.character = 'v';
+        cab.posX = -1;
+        cab.posY = -1;
+        snakeBody.push_back(cab);
+    }
+    food = 0;
 }
