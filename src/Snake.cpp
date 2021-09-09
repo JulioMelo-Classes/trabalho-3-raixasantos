@@ -5,7 +5,7 @@ Snake::Snake(){
     food = 0;
     currentDirection = 2; // 2: up
     Body cab;
-    cab.character = 'v';
+    cab.character = 'V';
     cab.posX = -1;
     cab.posY = -1;
     snakeBody.push_back(cab);
@@ -16,40 +16,23 @@ void Snake::set_head_position(int x, int y){
     snakeBody[0].posY = y;
 }
 
-void Snake::set_next_direction(int direction){
-    lastPosition = make_pair(snakeBody[0].posX,
-                            snakeBody[0].posY);
-
-    move_body();
-
-    // 0: left, 1: right, 2: up, 3: down
-    currentDirection = direction;
-    if(direction == 0){
-        snakeBody[0].character = '>';
-        snakeBody[0].posY--;
-    }
-    else if(direction == 1){
-        snakeBody[0].character = '<';
-        snakeBody[0].posY++;
-    }
-    else if(direction == 2){
-        snakeBody[0].character = 'v';
-        snakeBody[0].posX--;
-    }
-    else if(direction == 3){
-        snakeBody[0].character = '^';
-        snakeBody[0].posX++;
-    }
-}
-
-int Snake::get_head_direction(){
-    return currentDirection;
-}
-
 pair<int, int> Snake::get_head_position(){
     return make_pair(snakeBody[0].posX, snakeBody[0].posY);
 }
 
+char Snake::get_head_direction(){
+    return snakeBody[0].character;
+}
+
+void Snake::set_next_direction(pair<char, pair<int, int>> next){
+    snakeBody[0].character = next.first;
+    move_body();
+    snakeBody[0].posX = (next.second).first;
+    snakeBody[0].posY = (next.second).second;
+}
+//
+//<
+//
 void Snake::move_body(){
     if(snakeBody.size() > 1){
         for (int i = snakeBody.size() - 1; i > 0; i--){
@@ -95,7 +78,7 @@ void Snake::reset(int state){
         currentDirection = 2; // 2: up
         snakeBody.clear();
         Body cab;
-        cab.character = 'v';
+        cab.character = 'V';
         cab.posX = -1;
         cab.posY = -1;
         snakeBody.push_back(cab);

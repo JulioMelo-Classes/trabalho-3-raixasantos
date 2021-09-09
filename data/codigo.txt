@@ -1,0 +1,146 @@
+//adiciona a posição ao caminho
+    path.push_back(position);
+    //Imprimi as posições do caminho e retorna verdadeiro ao chegar na comida
+    if(position == food){
+        /*for(int i = 0; i < maze.size(); i++){
+                for(int j = 0; j < maze[i].size(); j++){
+                    cout << maze[i][j];
+                }
+                cout << endl;
+        }
+        for(auto pos:path){
+            cout << "(" << pos.first << "," << pos.second <<" )" << endl;
+        }
+        visited.clear();
+        path.clear();*/
+        return true;
+    }
+    //verificação se o caminho já foi visitado
+    for(auto pos:visited){
+        if(position == pos){
+            return false;
+        }
+    }
+    //adiciona a posição ao caminho de visitados
+    visited.push_back(position);
+    //Verificação se a posição é faz parte do caminho
+    if(maze[x][y] == '#'){
+        return false;
+    }
+    else if(find_solution(maze, make_pair(x-1,y),currentDirection, food) == true){
+        //maze[x-1][y] = 'S';
+        return true;
+    }
+    else if(find_solution(maze, make_pair(x,y-1),currentDirection, food) == true){
+        //maze[x][y-1] = 'S';
+        return true;
+    }
+    else if(find_solution(maze, make_pair(x+1,y),currentDirection, food) == true){
+        //maze[x+1][y] = 'S';
+        return true;
+    }
+    else if(find_solution(maze, make_pair(x,y+1),currentDirection, food) == true){
+        //maze[x][y+1] = 'S';
+        return true;
+    }
+    //caso nenhuma das posições faça parte do caminho é retirada dele
+    path.pop_back();
+    return false;
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+for(int i = 0; i < maze.size(); i++){
+        for(int j = 0; j < maze[i].size(); j++){
+            switch (currentDirection)
+            {
+            case 0:
+                if(maze[x][y-1] == ' ' || maze[x][y-1] == '*'){ // left
+                    nextDirection = LEFT;
+                    if(find_solution(maze, make_pair(x,y-1),nextDirection,food)){
+                        directions.push_back(0);
+                        return true;
+                    }
+                }
+                else if(maze[x-1][y] == ' ' || maze[x-1][y] == '*'){ // up
+                    nextDirection = UP;
+                    if(find_solution(maze, make_pair(x-1,y),nextDirection,food)){
+                        directions.push_back(2);
+                        return true;
+                    }
+                }
+                else if(maze[x+1][y] == ' ' || maze[x+1][y] == '*'){ // down
+                    nextDirection = DOWN;
+                    if(find_solution(maze, make_pair(x+1,y),nextDirection,food)){
+                        directions.push_back(3);
+                        return true;
+                    }
+                }
+                return false;
+                break;
+            case 1:
+                if(maze[x][y+1] == ' '){ // right
+                    visited.push_back(make_pair(x,y++));
+                    nextDirection = RIGHT;
+                    return true;
+                }
+                else if(maze[x-1][y] == ' '){ // up
+                    visited.push_back(make_pair(x--,y));
+                    nextDirection = UP;
+                    return true;
+                }
+                else if(maze[x+1][y] == ' '){ // down
+                    visited.push_back(make_pair(x++,y));
+                    nextDirection = DOWN;
+                    return true;
+                }
+                break;
+            case 2:
+                if(maze[x-1][y] == ' '){ // up
+                    visited.push_back(make_pair(x--,y));
+                    nextDirection = UP;
+                    return true;
+                }
+                else if(maze[x][y-1] == ' '){ // left
+                    visited.push_back(make_pair(x,y--));
+                    nextDirection = LEFT;
+                    return true;
+                }
+                else if(maze[x][y+1] == ' '){ // right
+                    visited.push_back(make_pair(x,y++));
+                    nextDirection = RIGHT;
+                    return true;
+                }
+                break;
+            case 3:
+                if(maze[x+1][y] == ' '){ // up
+                    visited.push_back(make_pair(x++,y));
+                    nextDirection = DOWN;
+                    return true;
+                }
+                else if(maze[x][y-1] == ' '){ // left
+                    visited.push_back(make_pair(x,y--));
+                    nextDirection = LEFT;
+                    return true;
+                }
+                else if(maze[x][y+1] == ' '){ // right
+                    visited.push_back(make_pair(x,y++));
+                    nextDirection = RIGHT;
+                    return true;
+                }
+                break;
+            }
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+#######
+#F    #
+# # # #
+#  V  #
+#######

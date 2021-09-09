@@ -65,7 +65,7 @@ void Level::set_food_location(vector<string> & maze){
 
     for(int i = 0; i < maze.size(); i++){
         for(int j = 0; j < maze[i].size(); j++){
-            if(maze[i][j] == ' ')
+            if(maze[i][j] == ' ' || maze[i][j] == '*')
                 empty.push_back(make_pair(i,j));
         }
     }

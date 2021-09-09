@@ -109,8 +109,11 @@ void SnakeGame::initialize_game(){
 void SnakeGame::process_actions(){
     switch(state){
         case WAITING_PLAYER:
-            player.find_solution(maze, snake.get_head_position(), snake.get_head_direction());
-            snake.set_next_direction(player.next_move());
+            cout << "("<<levels[currentLevel-1].get_foodLocation().first<<"|"
+                <<levels[currentLevel-1].get_foodLocation().second << ")" << endl;
+            player.find_solution(maze, snake, levels[currentLevel-1].get_foodLocation());
+            wait(2000);
+            snake.set_next_direction(player.next_move(snake));
             state = RUNNING;
             break;
         case WAITING_USER:
@@ -135,8 +138,10 @@ void SnakeGame::update(){
             }
             break;
         case RUNNING:
+
+            
             if(player.food_colision(levels[currentLevel-1].get_foodLocation(), snake.get_head_position())){
-                score += 200;
+                score += 200;   
                 snake.food_eaten();
                 levels[currentLevel-1].set_food_location(maze);
                 if(mode == CLASSIC){
