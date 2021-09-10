@@ -111,11 +111,9 @@ void SnakeGame::process_actions(){
     switch(state){
         case WAITING_PLAYER:
             if(!player.find_solution(maze, snake.get_head_direction(), snake.get_head_position(), levels[currentLevel-1].get_foodLocation())){                
-                state = GAME_OVER;
-                //game_over();
-            }            
-            snake.set_next_direction(player.next_move(snake));
-            //wait(5000);
+                state = WAITING_USER;
+            }        
+            snake.set_next_direction(player.next_move(snake, maze));
             state = RUNNING;
             break;
         case WAITING_USER:
@@ -135,7 +133,7 @@ void SnakeGame::update(){
             levels[currentLevel-1].set_food_location(maze);
             snake.set_head_position(levels[currentLevel-1].get_start_position().first,
                                     levels[currentLevel-1].get_start_position().second);
-            if(currentLevel > 1){
+            if(currentLevel > 1 || isLooping){
                 state = RUNNING;
             }
             break;
@@ -144,14 +142,22 @@ void SnakeGame::update(){
                 player.clear();
                 score += 200;   
                 snake.food_eaten();
-                levels[currentLevel-1].set_food_location(maze);
+                levels[currentLevel-1].set_food_location(maze);    
                 if(mode == CLASSIC){
                     snake.add_tail();
                 }
-            }
-
-            if(snake.get_foodEaten() == levels[currentLevel-1].get_foodsToEat()){
-                game_over();
+                if(snake.get_foodEaten() == levels[currentLevel-1].get_foodsToEat()){ 
+                    // adicionado agora
+                    if(currentLevel == levelsCount){
+                        state = GAME_OVER;
+                    }
+                    else{
+                        currentLevel++;
+                        maze = mazes[currentLevel-1];
+                        state = WAITING_USER_NEXT_LEVEL;
+                    }
+                    game_over();
+                }            
             }
             break;
         
@@ -172,6 +178,7 @@ void SnakeGame::update(){
             }
             else{
                 state = RUNNING;
+                isLooping = true;
             }
             break;
         
@@ -184,7 +191,7 @@ void SnakeGame::render(){
     clearScreen();
     switch(state){
         case STARTING: 
-            if(currentLevel == 1)
+            if(currentLevel == 1 && !isLooping)
                 print_menu_initially(); 
             break;
         case RUNNING:       
@@ -193,14 +200,19 @@ void SnakeGame::render(){
             state = WAITING_PLAYER;
             break;
         case WAITING_USER:
-            cout << "Você quer continuar com o jogo? (s/n)" << endl;
+            cout << "Você deseja jogar novamente? (s/n)" << endl;
             break;
         case WAITING_USER_NEXT_LEVEL:
             cout << "Você quer continuar no modo PACMAN ou CLASSIC? (p/c)" << endl;
             break;
         case GAME_OVER:
-            if(currentLevel == levelsCount){
-                cout << "A cobra ganhou!" << endl;
+            if(snake.get_lives() == 0){
+                cout << "A cobra morreu;-;!" << endl;
+            }
+            else{
+                if(currentLevel == levelsCount){
+                    cout << "A cobra ganhou!" << endl;
+                }
             }
             cout << "O jogo terminou!" << endl;
             break;
@@ -212,17 +224,6 @@ void SnakeGame::game_over(){
     if(state == GAME_OVER){
         score = 0;
     }
-    /*
-    else if(currentLevel == levelsCount){ // VERIFICAR NA LINHA
-        score = 0;     
-        currentLevel = 1;
-        state = GAME_LOOP;
-    }
-    */
-    else if(currentLevel != levelsCount){
-        currentLevel++;
-        state = WAITING_USER_NEXT_LEVEL;
-    }
     maze = mazes[currentLevel-1];
 }
 
@@ -231,7 +232,7 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(500);
+        wait(2000);
     }
 }
 

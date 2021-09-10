@@ -40,8 +40,6 @@ class Snake{
         * @param x próxima direção da cobra
         **/
         void set_next_direction(pair<char, pair<int, int>> next);
-
-        void move();
         
         /**
         * @brief retorna a atual direção da cobra
