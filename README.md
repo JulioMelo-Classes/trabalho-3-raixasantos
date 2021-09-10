@@ -71,3 +71,79 @@ No windows:
 
 # Testes  
 
+
+## Avaliação CP1
+
+### Snake/Pacman
+O jogo deveria conter o modo snake/pacman. Em ambos os modos não é possível andar pra trás. No modo snake deve ser desenhado o corpo.
+
+**Avaliação**
+
+ok
+
+### Render.ui
+O jogo deveria desenhar a UI corretamente, mostrando ao menos as vidas, o nível e o score.
+
+**Avaliação**
+
+Ok
+
+### Render.mapa
+O jogo deveria desenhar o mapa corretamente, com base no arquivo passado como argumento.
+
+**Avaliação**
+
+ok
+
+### Render.snake
+O jogo deveria desenhar a snake corretamente.
+
+**Avaliação**
+
+ok
+
+### Logic.colisão e Logic.comida
+O jogo deve se comportar corretamente quando ocorre uma colisão com comida e com paredes.
+
+**Avaliação**
+
+vou considerar 60% uma vez que não existem colisões com as paredes!
+
+### Transição de mapas
+O jogo deve ter transição de mapa uma vez que um mapa é terminado.
+
+**Avaliação**
+
+ok
+
+### Interação com o usuário
+O jogo deve perguntar ao usuário se quer continuar/reiniciar o nível/reiniciar o jogo a cada transição de mapa
+
+**Avaliação**
+
+ok
+
+### Classe Level ou similar
+O software deve encapsular as funcionalidades do nível em uma classe.
+
+**Avaliação**
+
+Ok
+
+### Classe Player ou similar
+O software deve encapsular as decisões do jogo em uma classe.
+
+**Avaliação**
+
+Ok
+
+### Classe Snake ou similar
+O software deve encapsular as funcionalidades relacionadas à snake em uma classe. 
+
+**Avaliação**
+
+OK
+
+## Comentários gerais CP1
+- Acho que a implementação está muito boa, a organização no gameloop pattern também está muito boa.
+- Da forma como está vocês poderiam implementar a colisão com paredes para entregar o jogo completo para o CP2. No entanto, acho que o que valeria mais era tentar encontrar a solução pro problema de encontrar a comida no mapa realmente.

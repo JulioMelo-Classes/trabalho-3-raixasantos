@@ -253,6 +253,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);
+        wait(100);
     }
 }
