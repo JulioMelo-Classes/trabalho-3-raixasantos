@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <algorithm>
 
 #include "Snake.h"
 
@@ -19,6 +20,7 @@ class Player{
 
     private:
         vector<pair<char, pair<int, int>>> path;
+        vector<pair<char , pair<int, int>>> passou;
         vector<pair<int,int> > visited;
         Direction nextDirection;
 
@@ -28,7 +30,7 @@ class Player{
         * @brief encontra um caminho para a cobra chegar até a comida
         * @return true, se encontrou um caminho. false, cc 
         **/
-        bool find_solution(vector<string> & maze, Snake & snake, pair<int, int> food);
+        bool find_solution(vector<string> & maze, char character, pair<int, int> pos, pair<int, int> food);
 
         /**
         * @brief atualiza a direção em que a cobra deve seguir

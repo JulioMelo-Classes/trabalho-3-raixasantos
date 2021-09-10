@@ -13,6 +13,7 @@ SnakeGame::SnakeGame(int argc, char *argv[]){
     choice = "";
     currentLevel = 0;
     score = 0;
+    isLooping = false;
     process_command_line(argc, argv);
     initialize_game();
 }
@@ -109,11 +110,12 @@ void SnakeGame::initialize_game(){
 void SnakeGame::process_actions(){
     switch(state){
         case WAITING_PLAYER:
-            cout << "("<<levels[currentLevel-1].get_foodLocation().first<<"|"
-                <<levels[currentLevel-1].get_foodLocation().second << ")" << endl;
-            player.find_solution(maze, snake, levels[currentLevel-1].get_foodLocation());
-            wait(2000);
+            if(!player.find_solution(maze, snake.get_head_direction(), snake.get_head_position(), levels[currentLevel-1].get_foodLocation())){                
+                state = GAME_OVER;
+                //game_over();
+            }            
             snake.set_next_direction(player.next_move(snake));
+            //wait(5000);
             state = RUNNING;
             break;
         case WAITING_USER:
@@ -137,10 +139,9 @@ void SnakeGame::update(){
                 state = RUNNING;
             }
             break;
-        case RUNNING:
-
-            
+        case RUNNING:            
             if(player.food_colision(levels[currentLevel-1].get_foodLocation(), snake.get_head_position())){
+                player.clear();
                 score += 200;   
                 snake.food_eaten();
                 levels[currentLevel-1].set_food_location(maze);
@@ -150,14 +151,6 @@ void SnakeGame::update(){
             }
 
             if(snake.get_foodEaten() == levels[currentLevel-1].get_foodsToEat()){
-                if(currentLevel == levelsCount){
-                    state = GAME_OVER;
-                }
-                else{
-                    currentLevel++;
-                    maze = mazes[currentLevel-1];
-                    state = WAITING_USER_NEXT_LEVEL;
-                }
                 game_over();
             }
             break;
@@ -191,44 +184,12 @@ void SnakeGame::render(){
     clearScreen();
     switch(state){
         case STARTING: 
-            if(currentLevel == 1){
-                cout << "-------> Boas vindas ao SNAZE <-------" << endl                
-                    << "------------------------------------------------------------------------" << endl
-                    << "Níveis carregados: " << levelsCount 
-                    << "| Vidas da snake: 5" 
-                    << "| Maçãs a serem comidas: " << levels[currentLevel-1].get_foodsToEat() << endl
-                    << "Vença todos os níveis para vencer o jogo. Boa sorte!" << endl
-                    << "------------------------------------------------------------------------" << endl
-                    << ">>>> Pressione <ENTER> para começar o jogo!" << endl;                    
-                    fgetc(stdin);
-                    cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
-                    state = WAITING_PLAYER;
-            } else{
-                cout << "Inciando nova fase no modo: " << mode << ". Divirta-se!!"<< endl;
-            }             
+            if(currentLevel == 1)
+                print_menu_initially(); 
             break;
         case RUNNING:       
-            cout << "----------------------------------------------------" << endl
-                << "Vida: " << snake.get_lives()
-                << "| Score: " << score
-                << "| Maçãs comidas: " << snake.get_foodEaten() << " de "<< levels[currentLevel-1].get_foodsToEat() << endl
-                << "----------------------------------------------------" << endl; 
-            
-            for(int i = 0; i < maze.size(); i++){
-                for(int j = 0; j < maze[i].size(); j++){
-                    if(snake.draw_snake(i,j))
-                        NULL;
-                    else if(make_pair(i,j) == levels[currentLevel-1].get_foodLocation())
-                        cout << 'F';
-                    else{ 
-                        if(maze[i][j] == '*')
-                            cout << ' ';
-                        else
-                            cout << maze[i][j];
-                    }
-                } 
-                cout << endl;
-            }
+            print_round();
+            print_map();  
             state = WAITING_PLAYER;
             break;
         case WAITING_USER:
@@ -247,10 +208,22 @@ void SnakeGame::render(){
 }
 
 void SnakeGame::game_over(){
-    snake.reset(state);
+    snake.reset(state); // state meramente ilustrativo
     if(state == GAME_OVER){
         score = 0;
     }
+    /*
+    else if(currentLevel == levelsCount){ // VERIFICAR NA LINHA
+        score = 0;     
+        currentLevel = 1;
+        state = GAME_LOOP;
+    }
+    */
+    else if(currentLevel != levelsCount){
+        currentLevel++;
+        state = WAITING_USER_NEXT_LEVEL;
+    }
+    maze = mazes[currentLevel-1];
 }
 
 void SnakeGame::loop(){
@@ -258,6 +231,46 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);
+        wait(500);
     }
+}
+
+void SnakeGame::print_menu_initially(){
+    cout << "-------> Boas vindas ao SNAZE <-------" << endl                
+                    << "------------------------------------------------------------------------" << endl
+                    << "Níveis carregados: " << levelsCount 
+                    << "| Vidas da snake: 5" 
+                    << "| Maçãs a serem comidas: " << levels[currentLevel-1].get_foodsToEat() << endl
+                    << "Vença todos os níveis para vencer o jogo. Boa sorte!" << endl
+                    << "------------------------------------------------------------------------" << endl
+                    << ">>>> Pressione <ENTER> para começar o jogo!" << endl;                    
+    fgetc(stdin);
+    cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+    state = WAITING_PLAYER;
+}
+
+void SnakeGame::print_map(){
+    for(int i = 0; i < maze.size(); i++){
+        for(int j = 0; j < maze[i].size(); j++){
+            if(snake.draw_snake(i,j))
+                NULL;
+            else if(make_pair(i,j) == levels[currentLevel-1].get_foodLocation())
+                cout << 'F';
+            else{ 
+                if(maze[i][j] == '*')
+                    cout << ' ';
+                else
+                    cout << maze[i][j];
+            }
+        } 
+        cout << endl;
+    }
+}
+
+void SnakeGame::print_round(){
+    cout << "----------------------------------------------------" << endl
+        << "Vida: " << snake.get_lives()
+        << "| Score: " << score
+        << "| Maçãs comidas: " << snake.get_foodEaten() << " de "<< levels[currentLevel-1].get_foodsToEat() << endl
+        << "----------------------------------------------------" << endl;             
 }
