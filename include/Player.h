@@ -31,8 +31,6 @@ class Player{
         **/
         bool find_solution(vector<string> & maze, char character, pair<int, int> pos, pair<int, int> food);
 
-        bool kill(vector<string> & maze, pair<int, int> pos);
-
         /**
         * @brief atualiza a direção em que a cobra deve seguir
         * @return retorna a direção para a cobra seguir
@@ -44,6 +42,12 @@ class Player{
         * @return true se "colidiu". false se não
         **/
         bool food_colision(pair<int, int> food, pair<int, int> head);
+
+        /**
+        * @brief Verifica se houve "colisão" com alguma parede
+        * @return true se "colidiu". false cc
+        **/
+        bool wall_colision(vector<string> & maze, pair<int, int> head);
 
         /**
         * @brief Limpa os valores de todos os vetores

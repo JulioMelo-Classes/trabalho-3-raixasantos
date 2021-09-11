@@ -89,6 +89,11 @@ class Snake{
         * @brief chamada quando o jogo termina a fim de destruir/resetar elementos da cobra
         **/
         void reset(int state);
+
+        /**
+        * @brief diminui a quantidade de vidas da cobra, uma vez que ela bateu na parede
+        **/
+        void hit_wall();
 };
 
 #endif
