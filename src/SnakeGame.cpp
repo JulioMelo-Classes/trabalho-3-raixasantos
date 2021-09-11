@@ -139,15 +139,34 @@ void SnakeGame::update(){
             break;
         case RUNNING:            
             if(player.food_colision(levels[currentLevel-1].get_foodLocation(), snake.get_head_position())){
-                player.clear();
                 score += 200;   
                 snake.food_eaten();
-                levels[currentLevel-1].set_food_location(maze);    
+                levels[currentLevel-1].set_food_location(maze); 
+                player.clear();   
                 if(mode == CLASSIC){
                     snake.add_tail();
+                }          
+            }
+
+            if(player.wall_colision(maze, snake.get_head_position())){
+                if(score >= 100){
+                    score -= 100;
                 }
-                if(snake.get_foodEaten() == levels[currentLevel-1].get_foodsToEat()){ 
-                    // adicionado agora
+                cout <<"Fora Função|Antes de bater: " << snake.get_lives() << endl;
+                snake.hit_wall();
+                cout <<"FORA Função|Depois de bater: " << snake.get_lives() << endl;
+                player.clear();
+                game_over();
+                snake.set_head_position(levels[currentLevel-1].get_start_position().first,
+                                        levels[currentLevel-1].get_start_position().second);
+            }
+
+            if(snake.get_lives() == 0){
+                state = GAME_OVER;
+                game_over();
+            }   
+
+            if(snake.get_foodEaten() == levels[currentLevel-1].get_foodsToEat()){ 
                     if(currentLevel == levelsCount){
                         state = GAME_OVER;
                     }
@@ -157,8 +176,9 @@ void SnakeGame::update(){
                         state = WAITING_USER_NEXT_LEVEL;
                     }
                     game_over();
-                }            
-            }
+                }   
+
+            //wait(1000);
             break;
         
         case WAITING_USER_NEXT_LEVEL: 
@@ -205,26 +225,28 @@ void SnakeGame::render(){
         case WAITING_USER_NEXT_LEVEL:
             cout << "Você quer continuar no modo PACMAN ou CLASSIC? (p/c)" << endl;
             break;
-        case GAME_OVER:
-            if(snake.get_lives() == 0){
-                cout << "A cobra morreu;-;!" << endl;
-            }
-            else{
-                if(currentLevel == levelsCount){
-                    cout << "A cobra ganhou!" << endl;
+        case GAME_OVER:                            
+                if(snake.get_lives() == 0)
+                {
+                    cout << "A cobra morreu;-;!" << endl;
+                }else
+                {
+                    if(currentLevel == levelsCount){
+                        cout << "A cobra ganhou!" << endl;
+                    }
                 }
-            }
+                
             cout << "O jogo terminou!" << endl;
             break;
     }
 }
 
 void SnakeGame::game_over(){
-    snake.reset(state); // state meramente ilustrativo
+     // state meramente ilustrativo
     if(state == GAME_OVER){
         score = 0;
     }
-    maze = mazes[currentLevel-1];
+    snake.reset(state);
 }
 
 void SnakeGame::loop(){
@@ -232,7 +254,7 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(2000);
+        wait(1000);
     }
 }
 
@@ -270,7 +292,8 @@ void SnakeGame::print_map(){
 
 void SnakeGame::print_round(){
     cout << "----------------------------------------------------" << endl
-        << "Vida: " << snake.get_lives()
+        << "Nível: " << currentLevel
+        << "| Vida: " << snake.get_lives()
         << "| Score: " << score
         << "| Maçãs comidas: " << snake.get_foodEaten() << " de "<< levels[currentLevel-1].get_foodsToEat() << endl
         << "----------------------------------------------------" << endl;             

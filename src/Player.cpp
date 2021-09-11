@@ -7,9 +7,12 @@
 using namespace std;
 
 bool Player::isSafe(vector<string> & maze, pair<int, int> position){
-    if(maze[position.first][position.second] == ' '){
-        return true;
+    if(0 < position.first < maze.size() && 0 < position.second < maze[1].size()){
+        if(maze[position.first][position.second] == ' '){            
+            return true;
+        }            
     }
+
     return false;
 }
 
@@ -21,10 +24,10 @@ bool Player::find_solution(vector<string> & maze, char character, pair<int, int>
     if(pos == food){
         path.push_back(make_pair(character, pos));
         int i = 0;
-        for(auto move:path){
+        /*for(auto move:path){
             cout << i << ": " << move.first <<" | (" << (move.second).first << "," << (move.second).second << ")" << endl;
             i++;
-        }
+        }*/
         return true;
     }
     if(!path.empty()){
@@ -44,8 +47,9 @@ bool Player::find_solution(vector<string> & maze, char character, pair<int, int>
                 if(find_solution(maze, (path.back()).first,  (path.back()).second, food)){
                     return true;
                 }
-                else
+                else{
                     path.pop_back();
+                }
             }
             else if(isSafe(maze, make_pair(x,y-1)))// left
             {
@@ -158,35 +162,35 @@ bool Player::find_solution(vector<string> & maze, char character, pair<int, int>
     return false;
 }
 
-bool Player::kill(vector<string> & maze, pair<int, int> pos){
-    if(maze[pos.first+1][pos.second] == '#' && maze[pos.first-1][pos.second] == '#'
-        && maze[pos.first][pos.second+1] == '#' && maze[pos.first][pos.second] == '#'){
-        return true;
-    }
-    else if(maze[pos.first][pos.second] == '#'){
-        return false;
-    }
-}
-
 pair<char, pair<int, int>> Player::next_move(Snake & snake, vector<string> & maze){
-    
+    //cout << "entrei next_move" << endl;
+    /*int i = 0;
+        for(auto move:path){
+            cout << i << ": " << move.first <<" | (" << (move.second).first << "," << (move.second).second << ")" << endl;
+            i++;
+        }*/
     if(!path.empty()){
         auto path_ = path.front();
         path.erase(path.begin());
+        //cout << "não deu seg aqui - empty" << endl;
         return path_;    
     }
     else{
         auto random = snake.get_head_position();
         random.first--;
-        if(maze[random.first][random.second] != '#' || maze[random.first][random.second] != 'o'){
-            return make_pair('V', random);
-        }
-        
+        return make_pair('V', random);
     }
 }
 
 bool Player::food_colision(pair<int, int> food, pair<int, int> head){
     if(food == head){
+        return true;
+    }
+    return false;
+}
+
+bool Player::wall_colision(vector<string> & maze, pair<int, int> head){
+    if(maze[head.first][head.second] == '#'){
         return true;
     }
     return false;

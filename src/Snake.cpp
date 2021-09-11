@@ -75,7 +75,8 @@ int Snake::get_foodEaten(){
 }
 
 void Snake::reset(int state){
-    life = 5;
+    if(state == 3) // GAME_LOOP
+        life = 5;
     bodySize = 1;
     snakeBody.clear();
     Body cab;
@@ -85,4 +86,13 @@ void Snake::reset(int state){
     cab.posY = -1;
     snakeBody.push_back(cab);
     food = 0;
+}
+
+void Snake::hit_wall(){
+    cout <<"Bati na Parede" << endl;
+    if(life > 0){
+        cout <<"Na Função|Antes de bater: " << life << endl;
+        this->life-- ;
+        cout <<"Na Função|Depois de bater: " << life << endl;
+    }
 }
