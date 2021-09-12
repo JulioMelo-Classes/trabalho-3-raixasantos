@@ -4,16 +4,29 @@ Snake::Snake(){
     life = 5;
     food = 0;
     Body cab;
-    cab.character = 'V';
-    currentDirection = 2; // 2: up
+    cab.character = '*';
     cab.posX = -1;
     cab.posY = -1;
     snakeBody.push_back(cab);
 }
 
-void Snake::set_head_position(int x, int y){
+void Snake::set_head_direction(int x, int y, vector<string> & maze){
+    if(maze[x-1][y] != '#' && maze[x+1][y] != '.')
+        snakeBody[0].character = 'V';    
+    else if(maze[x+1][y] != '#' && maze[x+1][y] != '.')
+        snakeBody[0].character = 'A';
+    else if(maze[x][y+1] != '#' && maze[x+1][y] != '.')
+        snakeBody[0].character = '<';
+    else
+        snakeBody[0].character = '>';
+    
+}
+
+void Snake::set_head_position(int x, int y, vector<string> & maze){
     snakeBody[0].posX = x;
     snakeBody[0].posY = y;
+
+    set_head_direction(x, y, maze);    
 }
 
 pair<int, int> Snake::get_head_position(){
@@ -80,7 +93,6 @@ void Snake::reset(int state){
     bodySize = 1;
     snakeBody.clear();
     Body cab;
-    currentDirection = 2; // 2: up
     cab.character = 'V';
     cab.posX = -1;
     cab.posY = -1;

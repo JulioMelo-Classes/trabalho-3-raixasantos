@@ -142,7 +142,8 @@ void SnakeGame::update(){
         case STARTING:
             levels[currentLevel-1].set_food_location(maze, snake);
             snake.set_head_position(levels[currentLevel-1].get_start_position().first,
-                                    levels[currentLevel-1].get_start_position().second);
+                                    levels[currentLevel-1].get_start_position().second,
+                                    maze);
             if(currentLevel > 1 || isLooping){
                 state = RUNNING;
             }
@@ -157,9 +158,7 @@ void SnakeGame::update(){
                     snake.add_tail();
                 }          
             }   
-            // colisão com a parede e a própria cobra
-            if(player.wall_colision(maze, snake.get_head_position()) 
-                || snake.isHere(snake.get_head_position(), 1))
+            if(player.wall_colision(maze, snake.get_head_position()))
             {
                 if(score >= 100){
                     score -= 100;
@@ -168,9 +167,10 @@ void SnakeGame::update(){
                 player.clear(maze);
                 game_over();
                 snake.set_head_position(levels[currentLevel-1].get_start_position().first,
-                                        levels[currentLevel-1].get_start_position().second);
+                                        levels[currentLevel-1].get_start_position().second, 
+                                        maze);
             }
-            if(snake.get_lives() == 0){
+            if(snake.get_lives() == 0 || snake.isHere(snake.get_head_position(), 1)){
                 state = WAITING_USER; // tava GAME_OVER
                 game_over();
             }
@@ -225,7 +225,7 @@ void SnakeGame::render(){
             state = WAITING_PLAYER;
             break;
         case WAITING_USER:
-            if(snake.get_lives() == 0) // rever(por causa da reset antes de chegar aqui) ou tirar
+            if(snake.get_lives() == 0) // DANDO FEEDBACK ERRADO - rever(por causa da reset antes de chegar aqui) 
             {
                 cout << "A cobra ganhou!" << endl;
             }else
@@ -258,7 +258,7 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(500);
+        wait(1000);
     }
 }
 
