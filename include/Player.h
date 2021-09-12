@@ -23,19 +23,19 @@ class Player{
         vector<pair<char , pair<int, int>>> passou;
         Direction nextDirection;
 
-        bool isSafe(vector<string> & maze, pair<int, int> position);
+        bool isSafe(vector<string> & maze, Snake & snake, pair<int, int> position);
     public:
         /**
         * @brief encontra um caminho para a cobra chegar até a comida
         * @return true, se encontrou um caminho. false, cc 
         **/
-        bool find_solution(vector<string> & maze, char character, pair<int, int> pos, pair<int, int> food);
+        bool find_solution(vector<string> & maze, Snake & snake, char character, pair<int, int> pos, pair<int, int> food);
 
         /**
         * @brief atualiza a direção em que a cobra deve seguir
         * @return retorna a direção para a cobra seguir
         **/
-        pair<char, pair<int, int>> next_move(Snake & snake, vector<string> & maze);
+        pair<char, pair<int, int>> next_move(Snake & snake, vector<string> & maze, pair<int, int> food);
 
         /**
         * @brief Verifica se houve "colisão" com a fruta
@@ -52,7 +52,7 @@ class Player{
         /**
         * @brief Limpa os valores de todos os vetores
         **/
-        void clear();
+        void clear(vector<string> & maze);
 };
 
 #endif

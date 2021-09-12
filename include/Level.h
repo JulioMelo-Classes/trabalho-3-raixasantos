@@ -1,5 +1,8 @@
 #ifndef Level_h
 #define Level_h
+
+#include "Snake.h"
+
 #include <iostream>
 #include <vector>
 #include <list>
@@ -67,7 +70,7 @@ class Level{
         * @brief atualiza a posição da comida no mapa
         * @param maze vector que armazena o mapa
         **/
-        void set_food_location(vector<string> & maze);
+        void set_food_location(vector<string> & maze, Snake & snake);
 };
 
 #endif

@@ -94,6 +94,12 @@ class Snake{
         * @brief diminui a quantidade de vidas da cobra, uma vez que ela bateu na parede
         **/
         void hit_wall();
+
+        /**
+        * @brief verifica se há alguma parte da cobra naquele espaço
+        * @return true, se as coordenadas pertencerem a cobra. Caso contrário, false
+        **/
+        bool isHere(pair<int, int> position, int mode);
 };
 
 #endif
