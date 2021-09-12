@@ -19,7 +19,6 @@ class Snake{
         int food; //<! número de comidas já comidas
         int bodySize; //<! número de comidas pegas pela cobra + a cabeça
         vector<Body> snakeBody; //<! vector contendo as partes do corpo da cobra
-        int currentDirection; //<! direção atual da cobra
         int nextDirection; //<! próxima direção da cobra
         pair<int, int> lastPosition; //<! coordenadas da posição anterior
 
@@ -33,7 +32,14 @@ class Snake{
         * @param x linha que a cobra inicia
         * @param y coluna que a cobra inicia
         **/
-        void set_head_position(int x, int y);
+        void set_head_position(int x, int y, vector<string> & maze);
+
+        /**
+        * @brief atualiza a direção da cabeça da cobra no inicio da partida
+        * @param x linha que a cobra inicia
+        * @param y coluna que a cobra inicia
+        **/
+        void set_head_direction(int x, int y, vector<string> & maze);
 
         /**
         * @brief atualiza a próxima direção da cobra
