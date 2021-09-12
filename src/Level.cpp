@@ -60,13 +60,15 @@ bool Level::verify_map_settings(string line_){
     return true;
 }
 
-void Level::set_food_location(vector<string> & maze){
+void Level::set_food_location(vector<string> & maze, Snake & snake){
     vector<pair<int, int> > empty;
 
     for(int i = 0; i < maze.size(); i++){
         for(int j = 0; j < maze[i].size(); j++){
-            if(maze[i][j] == ' ' || maze[i][j] == '*')
-                empty.push_back(make_pair(i,j));
+            if(!snake.isHere(make_pair(i, j), 0)){ 
+                if(maze[i][j] == ' ' || maze[i][j] == '*')
+                    empty.push_back(make_pair(i,j));
+            }
         }
     }
 

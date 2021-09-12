@@ -75,7 +75,7 @@ int Snake::get_foodEaten(){
 }
 
 void Snake::reset(int state){
-    if(state == 3) // GAME_LOOP
+    if(state == 4) // WAITING_USER
         life = 5;
     bodySize = 1;
     snakeBody.clear();
@@ -89,10 +89,23 @@ void Snake::reset(int state){
 }
 
 void Snake::hit_wall(){
-    cout <<"Bati na Parede" << endl;
     if(life > 0){
-        cout <<"Na Função|Antes de bater: " << life << endl;
         this->life-- ;
-        cout <<"Na Função|Depois de bater: " << life << endl;
     }
+}
+
+bool Snake::isHere(pair<int, int> position, int mode){
+    for(int i = 0; i < snakeBody.size(); i++){
+        if(snakeBody[i].posX == position.first && snakeBody[i].posY == position.second){
+            if(i == 0){
+                if(mode == 0) // modo que conta com cabeça
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return true;
+        }
+    }
+    return false;
 }

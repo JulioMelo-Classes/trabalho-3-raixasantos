@@ -44,12 +44,22 @@ void SnakeGame::process_command_line(int argc, char *argv[]){
     GameMapsFile = "../data/maze1.txt"; 
     mode = PACMAN;
 
-    if(argc == 3){
+    if(argc >= 3){
         if(string(argv[1]) == "CLASSIC"){ 
             mode = CLASSIC;
         }
         if(argv[2] != ""){
             GameMapsFile = argv[2];
+        }
+        if(argc == 4){
+            if(string(argv[3]) == "-LOOP"){
+                isLooping = true;
+            }
+        }
+        if(argc == 5){
+            if(string(argv[3]) == "-RANDOM"){
+                // começo em posição aleatória
+            }
         }
     }
 }
@@ -110,11 +120,11 @@ void SnakeGame::initialize_game(){
 void SnakeGame::process_actions(){
     switch(state){
         case WAITING_PLAYER:
-            if(!player.find_solution(maze, snake.get_head_direction(), snake.get_head_position(), levels[currentLevel-1].get_foodLocation())){                
-                state = WAITING_USER;
-            }        
-            snake.set_next_direction(player.next_move(snake, maze));
+            player.find_solution(maze, snake, snake.get_head_direction(), 
+                                snake.get_head_position(), levels[currentLevel-1].get_foodLocation());  
+            snake.set_next_direction(player.next_move(snake, maze, levels[currentLevel-1].get_foodLocation()));
             state = RUNNING;
+            // wait(800);
             break;
         case WAITING_USER:
             cin>>ws>>choice;
@@ -130,45 +140,43 @@ void SnakeGame::process_actions(){
 void SnakeGame::update(){
     switch(state){
         case STARTING:
-            levels[currentLevel-1].set_food_location(maze);
+            levels[currentLevel-1].set_food_location(maze, snake);
             snake.set_head_position(levels[currentLevel-1].get_start_position().first,
                                     levels[currentLevel-1].get_start_position().second);
             if(currentLevel > 1 || isLooping){
                 state = RUNNING;
             }
             break;
-        case RUNNING:            
+        case RUNNING:  
             if(player.food_colision(levels[currentLevel-1].get_foodLocation(), snake.get_head_position())){
                 score += 200;   
                 snake.food_eaten();
-                levels[currentLevel-1].set_food_location(maze); 
-                player.clear();   
+                levels[currentLevel-1].set_food_location(maze, snake); 
+                player.clear(maze);   
                 if(mode == CLASSIC){
                     snake.add_tail();
                 }          
-            }
-
-            if(player.wall_colision(maze, snake.get_head_position())){
+            }   
+            // colisão com a parede e a própria cobra
+            if(player.wall_colision(maze, snake.get_head_position()) 
+                || snake.isHere(snake.get_head_position(), 1))
+            {
                 if(score >= 100){
                     score -= 100;
                 }
-                cout <<"Fora Função|Antes de bater: " << snake.get_lives() << endl;
                 snake.hit_wall();
-                cout <<"FORA Função|Depois de bater: " << snake.get_lives() << endl;
-                player.clear();
+                player.clear(maze);
                 game_over();
                 snake.set_head_position(levels[currentLevel-1].get_start_position().first,
                                         levels[currentLevel-1].get_start_position().second);
             }
-
             if(snake.get_lives() == 0){
-                state = GAME_OVER;
+                state = WAITING_USER; // tava GAME_OVER
                 game_over();
-            }   
-
+            }
             if(snake.get_foodEaten() == levels[currentLevel-1].get_foodsToEat()){ 
                     if(currentLevel == levelsCount){
-                        state = GAME_OVER;
+                        state = WAITING_USER; // tava GAME_OVER
                     }
                     else{
                         currentLevel++;
@@ -177,8 +185,6 @@ void SnakeGame::update(){
                     }
                     game_over();
                 }   
-
-            //wait(1000);
             break;
         
         case WAITING_USER_NEXT_LEVEL: 
@@ -194,10 +200,9 @@ void SnakeGame::update(){
         case WAITING_USER:
             if(choice == "n"){
                 state = GAME_OVER;
-                game_over();
             }
             else{
-                state = RUNNING;
+                state = STARTING;
                 isLooping = true;
             }
             break;
@@ -220,32 +225,31 @@ void SnakeGame::render(){
             state = WAITING_PLAYER;
             break;
         case WAITING_USER:
+            if(snake.get_lives() == 0) // rever(por causa da reset antes de chegar aqui) ou tirar
+            {
+                cout << "A cobra ganhou!" << endl;
+            }else
+            {
+                cout << "A cobra morreu;-;!" << endl;
+            }
             cout << "Você deseja jogar novamente? (s/n)" << endl;
             break;
         case WAITING_USER_NEXT_LEVEL:
             cout << "Você quer continuar no modo PACMAN ou CLASSIC? (p/c)" << endl;
             break;
-        case GAME_OVER:                            
-                if(snake.get_lives() == 0)
-                {
-                    cout << "A cobra morreu;-;!" << endl;
-                }else
-                {
-                    if(currentLevel == levelsCount){
-                        cout << "A cobra ganhou!" << endl;
-                    }
-                }
-                
+        case GAME_OVER:                                            
             cout << "O jogo terminou!" << endl;
             break;
     }
 }
 
 void SnakeGame::game_over(){
-     // state meramente ilustrativo
-    if(state == GAME_OVER){
+    if(state == WAITING_USER){ // tava GAME_OVER
+        currentLevel = 1;
+        maze = mazes[currentLevel-1];
         score = 0;
     }
+    levels[currentLevel-1].set_food_location(maze, snake); 
     snake.reset(state);
 }
 
@@ -254,7 +258,7 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);
+        wait(500);
     }
 }
 
