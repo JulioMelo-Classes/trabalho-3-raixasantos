@@ -15,8 +15,8 @@ class Level{
         int columns; //<! número de colunas
         int rows; //<! número de linhas
         int foodAmount; //<! número de comidas no mapa
-        pair<int, int> foodLocation;//<! coordenadas atuais da comida First = x, Second = y
-        pair<int, int> snakePosStart; //<! coordenadas do ponto em que a cobra vai começar First = x Second = y
+        pair<int, int> foodLocation;//<! coordenadas atuais da comida First = linha, Second = coluna
+        pair<int, int> snakePosStart; //<! coordenadas do ponto em que a cobra vai começar First = linha, Second = coluna
 
     public:
         //<! Construtor
@@ -61,7 +61,7 @@ class Level{
 
         /**
         * @brief processa as informações sobre o mapa passadas no arquivo
-        * @param line linha do arquivo a ser processada
+        * @param line_ linha do arquivo a ser processada
         * @return True, se não houve nenhuma informação inválida. Caso contrário, false
         **/
         bool verify_map_settings(string line_);
@@ -69,6 +69,7 @@ class Level{
         /**
         * @brief atualiza a posição da comida no mapa
         * @param maze vector que armazena o mapa
+        * @param snake o objeto para realizar verificações
         **/
         void set_food_location(vector<string> & maze, Snake & snake);
 };

@@ -151,12 +151,6 @@ bool Player::find_solution(vector<string> & maze, Snake & snake, char character,
 }
 
 pair<char, pair<int, int>> Player::next_move(Snake & snake, vector<string> & maze, pair<int, int> food){
-    //cout << "entrei next_move" << endl;
-    /*int i = 0;
-        for(auto move:path){
-            cout << i << ": " << move.first <<" | (" << (move.second).first << "," << (move.second).second << ")" << endl;
-            i++;
-        }*/
     if(!path.empty()){
         auto path_ = path.front();
         path.erase(path.begin());
@@ -185,7 +179,7 @@ bool Player::wall_colision(vector<string> & maze, pair<int, int> head){
     return false;
 }
 
-void Player::clear(vector<string> & maze){ // lembrar de apagar a ref ao maze
+void Player::clear(vector<string> & maze){
     path.clear();
     passou.clear();
 }

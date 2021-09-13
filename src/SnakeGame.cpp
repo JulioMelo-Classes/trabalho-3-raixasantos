@@ -124,7 +124,6 @@ void SnakeGame::process_actions(){
                                 snake.get_head_position(), levels[currentLevel-1].get_foodLocation());  
             snake.set_next_direction(player.next_move(snake, maze, levels[currentLevel-1].get_foodLocation()));
             state = RUNNING;
-            // wait(800);
             break;
         case WAITING_USER:
             cin>>ws>>choice;
@@ -225,13 +224,6 @@ void SnakeGame::render(){
             state = WAITING_PLAYER;
             break;
         case WAITING_USER:
-            if(snake.get_lives() == 0) // DANDO FEEDBACK ERRADO - rever(por causa da reset antes de chegar aqui) 
-            {
-                cout << "A cobra ganhou!" << endl;
-            }else
-            {
-                cout << "A cobra morreu;-;!" << endl;
-            }
             cout << "Você deseja jogar novamente? (s/n)" << endl;
             break;
         case WAITING_USER_NEXT_LEVEL:
@@ -258,7 +250,7 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);
+        wait(500);
     }
 }
 
