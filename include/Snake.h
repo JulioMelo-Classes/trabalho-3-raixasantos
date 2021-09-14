@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <random>
 
 using namespace std;
 
@@ -31,19 +32,27 @@ class Snake{
         * @brief atualiza a posição da cabeça da cobra
         * @param x linha que a cobra inicia
         * @param y coluna que a cobra inicia
+        * @param maze vector que armazena o mapa
         **/
         void set_head_position(int x, int y, vector<string> & maze);
+
+        /**
+        * @brief atualiza a posição da cabeça da cobra de forma aleatória
+        * @param maze vector que armazena o mapa
+        */ 
+        void set_head_position_random(vector<string> & maze, int state);
 
         /**
         * @brief atualiza a direção da cabeça da cobra no inicio da partida
         * @param x linha que a cobra inicia
         * @param y coluna que a cobra inicia
+        * @param maze vector que armazena o mapa
         **/
         void set_head_direction(int x, int y, vector<string> & maze);
 
         /**
         * @brief atualiza a próxima direção da cobra
-        * @param x próxima direção da cobra
+        * @param next próxima direção da cobra: o caractere que representa a direção e a posição no mapa
         **/
         void set_next_direction(pair<char, pair<int, int>> next);
         
@@ -93,6 +102,7 @@ class Snake{
 
         /**
         * @brief chamada quando o jogo termina a fim de destruir/resetar elementos da cobra
+        * @param state especifica se deve ser reiniciar também a vida da cobra
         **/
         void reset(int state);
 
@@ -103,6 +113,8 @@ class Snake{
 
         /**
         * @brief verifica se há alguma parte da cobra naquele espaço
+        * @param position par de inteiros que representam a posição para ser verificada
+        * @param mode especifica se deve ser verificada também a posição da cabeça da cobra
         * @return true, se as coordenadas pertencerem a cobra. Caso contrário, false
         **/
         bool isHere(pair<int, int> position, int mode);

@@ -49,6 +49,7 @@ class SnakeGame{
         int currentLevel;//<! determina qual o labirinto atual
         int score; //<! guarda a pontuação da cobra
         bool isLooping; //<! guarda a informação se o jogo está repetindo
+        bool isRandom; //<! guarda a informação se a cobra vai iniciar de forma aleatória
 
     public:
         /**
