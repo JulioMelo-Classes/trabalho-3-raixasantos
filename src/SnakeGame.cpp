@@ -14,6 +14,7 @@ SnakeGame::SnakeGame(int argc, char *argv[]){
     currentLevel = 0;
     score = 0;
     isLooping = false;
+    isRandom = false;
     process_command_line(argc, argv);
     initialize_game();
 }
@@ -51,14 +52,11 @@ void SnakeGame::process_command_line(int argc, char *argv[]){
         if(argv[2] != ""){
             GameMapsFile = argv[2];
         }
-        if(argc == 4){
-            if(string(argv[3]) == "-LOOP"){
+        for(int i = 3; i < argc; i++){
+            if(string(argv[i]) == "-LOOP"){
                 isLooping = true;
-            }
-        }
-        if(argc == 5){
-            if(string(argv[3]) == "-RANDOM"){
-                // começo em posição aleatória
+            }else if(string(argv[i]) == "-RANDOM"){
+                isRandom = true;
             }
         }
     }
@@ -106,7 +104,7 @@ void SnakeGame::initialize_game(){
             }
         }
     }
-    if(!MapConfig || posStartCount != 1 || levels.size() == 0){
+    if(!MapConfig || posStartCount > 1 || levels.size() == 0){
         state = GAME_OVER;
     }
     else{
@@ -114,6 +112,8 @@ void SnakeGame::initialize_game(){
         levelsCount = levels.size();
         maze = mazes[currentLevel];
         currentLevel = 1;
+        if(posStartCount == 0)
+            isRandom = true;
     }
 }
 
@@ -140,12 +140,15 @@ void SnakeGame::update(){
     switch(state){
         case STARTING:
             levels[currentLevel-1].set_food_location(maze, snake);
-            snake.set_head_position(levels[currentLevel-1].get_start_position().first,
-                                    levels[currentLevel-1].get_start_position().second,
-                                    maze);
             if(currentLevel > 1 || isLooping){
                 state = RUNNING;
             }
+            if(isRandom)
+                snake.set_head_position_random(maze, state);
+            else
+                snake.set_head_position(levels[currentLevel-1].get_start_position().first,
+                                    levels[currentLevel-1].get_start_position().second,
+                                    maze);
             break;
         case RUNNING:  
             if(player.food_colision(levels[currentLevel-1].get_foodLocation(), snake.get_head_position())){
@@ -165,17 +168,20 @@ void SnakeGame::update(){
                 snake.hit_wall();
                 player.clear(maze);
                 game_over();
-                snake.set_head_position(levels[currentLevel-1].get_start_position().first,
-                                        levels[currentLevel-1].get_start_position().second, 
+                if(isRandom)
+                    snake.set_head_position_random(maze, state);
+                else
+                    snake.set_head_position(levels[currentLevel-1].get_start_position().first,
+                                        levels[currentLevel-1].get_start_position().second,
                                         maze);
             }
             if(snake.get_lives() == 0 || snake.isHere(snake.get_head_position(), 1)){
-                state = WAITING_USER; // tava GAME_OVER
+                state = WAITING_USER; 
                 game_over();
             }
             if(snake.get_foodEaten() == levels[currentLevel-1].get_foodsToEat()){ 
                     if(currentLevel == levelsCount){
-                        state = WAITING_USER; // tava GAME_OVER
+                        state = WAITING_USER; 
                     }
                     else{
                         currentLevel++;
@@ -236,7 +242,7 @@ void SnakeGame::render(){
 }
 
 void SnakeGame::game_over(){
-    if(state == WAITING_USER){ // tava GAME_OVER
+    if(state == WAITING_USER){ 
         currentLevel = 1;
         maze = mazes[currentLevel-1];
         score = 0;

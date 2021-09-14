@@ -6,11 +6,9 @@
 
 using namespace std;
 
-bool Player::isSafe(vector<string> & maze, Snake & snake, pair<int, int> position){ // passar a referencia do cobra
+bool Player::isSafe(vector<string> & maze, Snake & snake, pair<int, int> position){
     if(0 <= position.first <= maze.size() && 0 <= position.second <= maze[1].size()){
-        // verificar se é posição de alguma parte da cobre
         if(snake.isHere(position, 0)){
-            cout << "a cobra tava no meio" << endl;
             return false;
         }
         if(maze[position.first][position.second] == ' '){            
@@ -156,7 +154,7 @@ pair<char, pair<int, int>> Player::next_move(Snake & snake, vector<string> & maz
         path.erase(path.begin());
         return path_;    
     }
-    else{
+    else{ // modo em que escolhe "morrer"
         auto random = snake.get_head_position();
         if(random.first >= 1)
             random.first--;

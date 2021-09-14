@@ -29,6 +29,28 @@ void Snake::set_head_position(int x, int y, vector<string> & maze){
     set_head_direction(x, y, maze);    
 }
 
+ void Snake::set_head_position_random(vector<string> & maze, int state){
+     vector<pair<int, int> > empty;
+
+    for(int i = 0; i < maze.size(); i++){
+        for(int j = 0; j < maze[i].size(); j++){
+            if(maze[i][j] == ' ' || maze[i][j] == '*')
+                empty.push_back(make_pair(i,j));
+        }
+    }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0,empty.size()-1);
+    int num = dist(gen);
+
+    snakeBody[0].posX = empty[num].first;
+    snakeBody[0].posY = empty[num].second;
+
+    if(state == 0)
+        set_head_direction(snakeBody[0].posX, snakeBody[0].posY, maze);    
+}
+
 pair<int, int> Snake::get_head_position(){
     return make_pair(snakeBody[0].posX, snakeBody[0].posY);
 }
@@ -88,7 +110,7 @@ int Snake::get_foodEaten(){
 }
 
 void Snake::reset(int state){
-    if(state == 4) // WAITING_USER
+    if(state == 4) 
         life = 5;
     bodySize = 1;
     snakeBody.clear();
