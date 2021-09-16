@@ -28,6 +28,7 @@ bool Player::find_solution(vector<string> & maze, Snake & snake, char character,
         path.push_back(make_pair(character, pos));
         return true;
     }
+    
     if(!path.empty()){
         for(auto posi:passou){
             if(posi == path.back()){
